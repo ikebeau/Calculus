@@ -1,0 +1,37 @@
+---
+title: "Project 1 Task 3"
+format: 
+  html:
+    code-fold: true
+editor: visual
+execute: 
+  echo: true
+  warning: false
+---
+
+## 
+
+```{r}
+f0 <- function(t, a0=100){
+  return(a0)
+}
+f1 <- function(t, a1, a0=100){
+  return(a0 + (a1 * t))
+}
+f2 <- function(t, a1, a2, a0=100){
+  return(a0 + a1 * t + a2 * t^2)
+}
+f3 <- function(t, a1, a2, a0=(100-a1)){
+  return(a0 + a1 * exp(-a2 * t))
+}
+f4 <- function(t, a1, a2, a0=100){
+  return(a0 + a1 * t + a2 * log((0.005 * t + 1)))
+}
+f5 <- function(t, a1, a2, a0=100){
+  return((a0 + a1 * t) * exp(-a2 * t))
+}
+```
+
+```{r}
+
+```
