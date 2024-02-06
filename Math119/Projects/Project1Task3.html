@@ -99,24 +99,151 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>f0 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, <span class="at">a0=</span><span class="dv">100</span>){</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(a0)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>f1 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, a1, <span class="at">a0=</span><span class="dv">100</span>){</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(a0 <span class="sc">+</span> (a1 <span class="sc">*</span> t))</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>f2 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, a1, a2, <span class="at">a0=</span><span class="dv">100</span>){</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(a0 <span class="sc">+</span> a1 <span class="sc">*</span> t <span class="sc">+</span> a2 <span class="sc">*</span> t<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>f3 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, a1, a2, <span class="at">a0=</span>(<span class="dv">100</span><span class="sc">-</span>a1)){</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(a0 <span class="sc">+</span> a1 <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>a2 <span class="sc">*</span> t))</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>f4 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, a1, a2, <span class="at">a0=</span><span class="dv">100</span>){</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(a0 <span class="sc">+</span> a1 <span class="sc">*</span> t <span class="sc">+</span> a2 <span class="sc">*</span> <span class="fu">log</span>((<span class="fl">0.005</span> <span class="sc">*</span> t <span class="sc">+</span> <span class="dv">1</span>)))</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>f5 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, a1, a2, <span class="at">a0=</span><span class="dv">100</span>){</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>((a0 <span class="sc">+</span> a1 <span class="sc">*</span> t) <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>a2 <span class="sc">*</span> t))</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data4led)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>f0 <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">a0=</span><span class="dv">100</span>){</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(a0)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>f1 <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">a1=</span><span class="fl">0.00025830080</span>, <span class="at">a0=</span><span class="dv">100</span>){</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(a0 <span class="sc">+</span> (a1 <span class="sc">*</span> x))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>f2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">a1=</span><span class="fl">0.0004842401</span>, <span class="at">a2=</span><span class="sc">-</span><span class="fl">0.00000008834307</span>, <span class="at">a0=</span><span class="dv">100</span>){</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(a0 <span class="sc">+</span> a1 <span class="sc">*</span> x <span class="sc">+</span> a2 <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>f3 <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">a1=</span><span class="sc">-</span><span class="fl">38.96574</span> , <span class="at">a2=</span><span class="fl">10.57587</span>, <span class="at">a0=</span><span class="fl">100.6203</span>){</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(a0 <span class="sc">+</span> a1 <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>a2 <span class="sc">*</span> x))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>f4 <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">a1=</span><span class="sc">-</span><span class="fl">0.0002051946</span>, <span class="at">a2=</span><span class="fl">0.4895432441</span>){</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="dv">100</span> <span class="sc">+</span> a1 <span class="sc">*</span> x <span class="sc">+</span> a2 <span class="sc">*</span> <span class="fu">log</span>((<span class="fl">0.005</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="dv">1</span>)))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>f5 <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">a1=</span><span class="fl">0.1497315</span>, <span class="at">a2=</span><span class="fl">0.0004607059</span>, <span class="at">a0=</span><span class="sc">-</span><span class="fl">0.1486081</span>){</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>((a0 <span class="sc">+</span> a1 <span class="sc">*</span> x) <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>a2 <span class="sc">*</span> x))</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bulb <span class="ot">&lt;-</span> <span class="fu">led_bulb</span>(<span class="dv">1</span>, <span class="at">seed =</span> <span class="dv">719</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="function-0" class="level1">
+<h1>Function 0</h1>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">80000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">120</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a =</span> <span class="dv">100</span>, <span class="at">b =</span> <span class="dv">0</span>)  </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a =</span> <span class="dv">100</span>, <span class="at">b =</span> <span class="dv">0</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Project1Task3_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="function-1" class="level1">
+<h1>Function 1</h1>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">80000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">120</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(f1, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>)  </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(f1, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Project1Task3_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="function-2" class="level1">
+<h1>Function 2</h1>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">80000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">120</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(f2, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>) </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(f2, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Project1Task3_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="function-3" class="level1">
+<h1>Function 3</h1>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">80000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">120</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(f3, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>)  </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(f3, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Project1Task3_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="function-4" class="level1">
+<h1>Function 4</h1>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">80000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">120</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(f4, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>) </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(f4, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Project1Task3_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="function-5" class="level1">
+<h1>Function 5</h1>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">80000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">120</span>))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(f5, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>) </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bulb<span class="sc">$</span>hours, bulb<span class="sc">$</span>percent_intensity, <span class="at">main =</span> <span class="st">"Bulb Hours and Intensity (%)"</span>, <span class="at">xlab =</span> <span class="st">"Hours"</span>, <span class="at">ylab =</span> <span class="st">"Intensity(%)"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(f5, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Project1Task3_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
