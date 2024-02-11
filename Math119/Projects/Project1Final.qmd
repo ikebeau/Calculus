@@ -1,0 +1,505 @@
+---
+title: "Project 1 Final Report"
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+execute: 
+  echo: true
+  warning: false
+editor: visual
+---
+
+
+
+::: panel-tabset
+
+# Background
+
+::: panel-tabset
+
+## LED
+
+### What is LED?
+
+[Light-emitting diode (LED) is a widely used standard source of light in electrical equipment. They are mostly found in applications within devices that show the time and display different types of data. The colour of an LED is determined by the material used in the semiconducting element.](https://byjus.com/physics/light-emitting-diode/) 
+A light-emitting diode (LED) is a semiconductor device that emits light when an electric current flows through it
+
+### What is Lumen?
+
+The definition of lumen is: “a unit of luminous flux in the International System of Units, that is equal to the amount of light given out through a solid angle by a source of one candela intensity radiating equally in all directions.”  
+
+[In short, lumens equal brightness. And watts do not. Not that watts are bad, but they measure energy use, not light output. With new, energy-efficient LED technology, we can no longer rely upon wattage to indicate how bright a bulb is. See how to measure lumens below:](https://www.lumens.com/the-edit/the-guides/light-bulb-facts-the-meaning-of-lumens/?clickid=Wcb1IpTmPxyPWCty-6Ww21zPUkH2baQfFQts3k0&utm_medium=affiliate&utm_source=ir&irgwc=1&im_rewards=1)  
+
+![Incandecent vs LED](Lumen_Watts.png)
+
+## Plotting the Data
+
+```{r}
+library(data4led)
+library(pander)
+```
+
+This data table below is a representation of the Data set. It gives each of the values in an orderly fashion. Each of the columns represent pertinent data. The only data however that we will use in this analysis is comparing the percent_intensity to the hours column.
+
+```{r}
+bulb <- led_bulb(1, seed = 719)
+pander(head(bulb))
+```
+
+In the graph we can see that there is an upward trend that as the hours of use increase so does the intensity of the light bulb. There are the outliers, in the data frame. However, there is a trend that seems to begin to level off at about hour 2000. From hour 2000 on the climb seems to not be as steep. This looks like a quadratic model may be the best fit.
+
+```{r}
+plot(bulb$hours, bulb$percent_intensity, main = "Correlation between Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+```
+
+
+
+:::
+
+# Analyzing the Functions
+
+::: panel-tabset
+
+```{r}
+f_0 <- function(x, a_0){
+    return(a_0)
+}
+f_1 <- function(x, a_0, a_1){
+    return(a_0 + a_1 * x)
+}
+f_2 <- function(x, a_0, a_1, a_2){
+    return(a_0 + a_1 * x + a_2 * x^2)
+}
+f_3 <- function(x, a_0, a_1, a_2){
+    return(a_0 + a_1 * exp(-a_2 * x))
+}
+f_4 <- function(x, a_0, a_1, a_2){
+    return(a_0 + a_1 * x + a_2)
+}
+f_5 <- function(x, a_0, a_1, a_2){
+    return((a_0 + a_1 * x) * exp(-a_2 * x))
+}
+```
+
+
+### Note:
+
+**I decided to evaluate all the functions but will only graph 2 of them. Namely** $f_3(x)$ **&** $f_5(x)$.
+
+
+
+### Function 3
+
+
+
+The equation of $f_3(x)$ is as follows $f_3(x; a_0, a_1, a_2) = a_0 + a_1 * e^{-a_2 * x}$. This type of equation is commonly used for exponential decay of items. As such I will refer to the graph components in the context of decay.
+
+$x$ is the input variable so as that number changes movement across the x-axis changes at the same rate, unless altered by other variables.
+
+$a_0$ is a constant. As this number changes it changes the y asymptote of the graph. Negative values drop the y asymptote. Positive values drive it up.
+
+$a_1$ is a constant. As this number changes it will affect the degree or magnitude of the decay.
+
+$a_2$ is a constant. As this number changes it affects the rate at which the variables or object decays.
+
+
+
+
+```{r}
+
+```
+
+### Function 4
+
+
+The equation of $f_4(x)$ is as follows $f_4(x; a_0, a_1, a_2) = a_0 + a_1 * x + a_2$
+
+$x$ is the input variable so as that number changes movement across the x-axis changes at the same rate
+
+$a_0$ & $a_2$ are constants. These affect the vertical shift of the graph. As the values increase so does the vertical or y-intercept. They work together, and yet work seprately (they can be their own unique values) Thus making it so they affect the value together. In Linear Regression $a_2$ is commonly used with an $x_{2i}$ in order to turn a_2 into a variable to create a seperate line. However, as this does not exist they work in tandem. 
+
+$a_1$ is a constant that affects the slope or steepness of the line.
+
+
+
+```{r}
+
+```
+
+
+### Function 5
+
+
+
+The equation of $f_5(x)$ is as follows $f_5(x; a_0, a_1, a_2) = (a_0 + a_1 * x) * e^{-a_2 * x}$
+
+$x$ is the input variable so as that number changes movement across the x-axis changes at the same rate. It also is put into the decay rate affecting the speed with $-a_2$
+
+$a_0$ and $a_1$ create the linear part of the equation. $a_0$ controls the intercept. $a_1$ controls the slope and steepness of that line.
+
+$a_2$ however,  influences the exponential decay rate with $x$
+
+
+### Graphs
+
+**Here is the parameter values used in the graph**
+
+`Note: The 1st value is the blue line the 2nd is the red`
+
+*a0_values <- c(1, 2)*
+
+*a1_values <- c(2, 4)*
+
+*a2_values <- c(0.1, 4)*
+
+`Note: This creates a vector from 0 to 30 incrementing by 0.5`
+
+*x <- seq(0, 30, .5)*
+
+`Note: Creation of y values for respective functions`
+
+*y_3 <- f_3(x, a0_values, a1_values, a2_values)*
+
+*y_5 <- f_5(x, a0_values, a1_values, a2_values)*
+
+
+
+```{r, warning=FALSE}
+
+a0_values <- c(1, 2)
+a1_values <- c(2, 4)
+a2_values <- c(0.1, 2)
+x <- seq(0, 30, .5)
+y_3 <- f_3(x, a0_values, a1_values, a2_values)
+y_4 <- f_5(x, a0_values, a1_values, a2_values)
+
+par(mfrow = c(1, 2))
+
+# Plot for f_3
+plot(x, f_3(x, a0_values[1], a1_values[1], a2_values[1]), type = "l", col = "blue", ylab = "f_3(x)", main = "Exploration of f_3", ylim = c(1, 6), xlim = c(0, 35))
+lines(x, f_3(x, a0_values[2], a1_values[2], a2_values[2]), col = "red")
+
+# Plot for f_5
+plot(x, f_5(x, a0_values[1], a1_values[1], a2_values[1]), type = "l", col = "blue", ylab = "f_5(x)", main = "Exploration of f_5", xlim = c(0, 30), ylim = c(0, 9))
+lines(x, f_5(x, a0_values[2], a1_values[2], a2_values[2]), col = "red")
+
+par(mfrow = c(1, 1))
+
+
+```
+
+As is stated above the graphs rendered show the values for $f_3(x)$ and $f_5x$. Each of the values. 
+
+In the first graph $a_0$ affects the asymptote of the graph. $a_1$ affects the start location of the trend. $a_2$ will affect the steepness of the trend. 
+
+In the second graph $a_0$ affects the assymptote of the graph.The $a_1$ variable will affect the start location on the x-axis of the leveling off. The $a_2$ variable will affect the steepness of the trend.
+
+
+:::
+
+# Graphing
+
+::: panel-tabset
+
+# Creating Functions
+
+```{r}
+library(data4led)
+f0 <- function(x, a0=100){
+  return(a0)
+}
+f1 <- function(x, a1=0.00025830080, a0=100){
+  return(a0 + (a1 * x))
+}
+f2 <- function(x, a1=0.0004842401, a2=-0.00000008834307, a0=100){
+  return(a0 + a1 * x + a2 * x^2)
+}
+f3 <- function(x, a1=-0.65313 , a2=0.02026, a0=100.65313){
+  return(a0 + a1 * exp(-a2 * x))
+}
+f4 <- function(x, a1=-0.0002051946, a2=0.4895432441, a0=100){
+  return(a0 + a1 * x + a2 * log((0.005 * x + 1)))
+}
+f5 <- function(x, a1=0.000146, a2=-0.000001, a0=100){
+  return((a0 + a1 * x) * exp(-a2 * x))
+}
+x <- seq(0, 100000, 5)
+y0 <- f0(x)
+y1 <- f1(x)
+y2 <- f2(x)
+y3 <- f3(x)
+y4 <- f4(x)
+y5 <- f5(x)
+```
+
+```{r}
+bulb <- led_bulb(1, seed = 719)
+```
+
+```{r}
+#par(mfrow=c(1,2))
+#plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and #Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = #c(0,80000), ylim = c(-10,120))
+#lines(x, y0)
+#plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and #Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+#lines(x, y0)
+#par(mfrow=c(1,1))
+```
+
+# Function 1
+
+This is the function $f_1(t; a_0,a_1) = a_0 + a_1t$ where $t \geq 0$
+
+```{r}
+par(mfrow=c(1,2))
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
+lines(x, y1) 
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+lines(x, y1)  
+par(mfrow=c(1,1))
+```
+
+This function does a good job at cutting through the data. Yet, it only predicts 3 dots well. The trend gets largely out of control the further the trend line goes out. It looks similar to the 5th function explanation of this data.
+
+# Function 2
+
+This is the function $f_2(t; a_0,a_1,a_2) = a_0 + a_1t + a_2t^2$ where $t \geq 0$
+
+```{r}
+par(mfrow=c(1,2))
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
+lines(x, y2)
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+lines(x, y2)
+par(mfrow=c(1,1))
+```
+
+This graph does a good job of staying between the data frame. However, after about 20,000 hours this graph seems to drop off at a large rate. This is against what we believe about LED lights. As such it may not be the best representation of the data.
+
+# Function 3
+
+This is the function $f_2(t; a_0,a_1,a_2) = a_0 + a_1t + a_2t^2$ where $t \geq 0$
+
+```{r}
+par(mfrow=c(1,2))
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
+lines(x, y3) 
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+lines(x,y3)
+par(mfrow=c(1,1))
+```
+
+This graph out of all of them seem to follow the best. However, it seems to imply that after about 500 hours the curve begins to become flat with little change. Though this does a good job of sticking around the dataframe it seems to imply a continuous trend that is nearly flat.
+
+# Function 4
+
+This is the function $f_4(t; a_0,a_1,a_2) = a_0 + a_1t + a_2\ln(0.005t+1)$ where $t \geq 0$
+
+```{r}
+par(mfrow=c(1,2))
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
+lines(x, y4)
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+lines(x,y4) 
+par(mfrow=c(1,1))
+```
+
+This function does a good job of cutting through the data. It describes the dots in the dataset well. The residuals seem to be minimized for sure. However, as with function 5 extrapolating beyond the point of the data shares mixed results on the effectiveness of the chart.
+
+# Function 5
+
+This is the function $f_5(t; a_0,a_1,a_2) = (a_0+a_1t)e^{-a_2t}$ where $t \geq 0$
+
+```{r}
+par(mfrow=c(1,2))
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
+lines(x, y5)
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+lines(x, y5)
+par(mfrow=c(1,1))
+```
+
+From this one we can see that the line does a good job at going through the middle of the dots. However, it is clear that it after a while goes quite a way out of the data's scope. This means that it is representative of the data however, extrapolating the idea to longer hours is undeterminated on how accurate the model is.
+
+:::
+
+# Finding the 80%
+
+::: panel-tabset
+## Building the Functions
+
+```{r}
+f0 <- function(x, a0=100){
+  return(a0)
+}
+f1 <- function(x, a1=0.00025830080, a0=100){
+  return(a0 + (a1 * x))
+}
+f2 <- function(x, a1=0.0004842401, a2=-0.00000008834307, a0=100){
+  return(a0 + a1 * x + a2 * x^2)
+}
+f3 <- function(x, a1=-0.65313 , a2=0.02026, a0=100.65313){
+  return(a0 + a1 * exp(-a2 * x))
+}
+f4 <- function(x, a1=-0.0002051946, a2=0.4895432441, a0=100){
+  return(a0 + a1 * x + a2 * log((0.005 * x + 1)))
+}
+f5 <- function(x, a1=0.000146, a2=-0.000001, a0=100){
+  return((a0 + a1 * x) * exp(-a2 * x))
+}
+```
+
+```{r}
+x <- seq(0, 100000, 5)
+y0 <- f0(x)
+y1 <- f1(x)
+y2 <- f2(x)
+y3 <- f3(x)
+y4 <- f4(x)
+y5 <- f5(x)
+```
+
+## Function 1
+
+This is the function $f_1(t; a_0,a_1) = a_0 + a_1 * t$ We are interested in finding when $f_1(x) = 80$. To start solving this problem we will set up the equation with the values $f_1(t; a_0 = 100,a_1 = 0.00025830080) = a_0 + a_1 * t$.
+
+Here are the steps
+
+1.  $80 = 100 + 0.0002583008 * t$
+2.  $-20 = 0.0002583008 * t$
+3.  $\frac{-20}{0.0002583008} = t$
+
+```{r}
+library(pander)
+f1 <- function(x, a1 = 0.00025830080, a0 = 100) {
+  return(a0 + (a1 * x))
+}
+
+f <- function(x) f1(x) - 80
+
+root <- uniroot(f, c(-100000, 100000))
+
+root_value1 <- root$root
+
+
+pander(paste0("This is the exact value: ", (-20/0.0002583008)))
+pander(paste0("This is the uniroot value: ", root_value1))
+```
+
+This first model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero. 
+
+
+## Function 2
+
+This is the function $f_2(t; a_0,a_1,a_2) = a_0 + a_1t + a_2t^2$ where $a_0 = 100, a_1 = 0.0004842401, a_2 = -0.00000008834307$. Steps: 1. $80 = 100 + 0.0004842401 * t - 0.00000008834307 * t^2$ 2. $0 = 20 + 0.0004842401 * t - 0.00000008834307 * t^2$ 3. Quadratic Formula: $\frac{-b\pm\sqrt{b^2-4ac}}{2a}$
+
+```{r}
+f2_plus_worked <- (-0.0004842401 - sqrt(0.0004842401^2 - 4 * 20 * -0.00000008834307))/(2 * -0.00000008834307)
+
+f <- function(x) f2(x) - 80
+
+root <- uniroot(f, c(-10000, 100000))
+
+root_value1 <- root$root
+
+pander(paste0("This is the worked out value: ", f2_plus_worked))
+pander(paste0("This is the uniroot value: ", root_value1))
+```
+
+This model is consistent with what we know about LED light bulbs. What we know about them is that over time the energy will eventually begin to burn out and the light bulb will eventually lose brightness. The other benefit to this model is that it rises in the short run and then decreases in the long run. This is worth mentioning because that is how LED bulbs work. They initially will gradually increase in the amount of light produced and eventually decrease over time. 
+
+
+## Function 3
+
+This is the function: $f_3(x; a_0, a_1, a_2) = a_0 + a_1 * e^{-a_2 * x}$ where
+
+$a_0 = 100.65313$, $a_1 = -0.65313$, and $a_2 = 0.02026$ again the model will be set equal to 80
+
+In order to solve this equation by hand, the first step is to get the $e^{-a_2 * x}$ by itself. We do this by subtracting $a_0$ and dividing by $a_1$ like so $\frac{80-a_0}{a_1}=e^{-a_2 * x}$ at this point you will remove the exponential through creating a natural log $ln(\frac{80-a_0}{a_1})=a_2 * x$. After which you can divide over the $a_2$, ending with an equation like so $\frac{ln(\frac{80-a_0}{a_1})}{a_2} = x$. This will be the answer to the question.
+
+```{r}
+f3 <- function(x, a1=-0.65313 , a2=0.02026, a0=100.65313){
+  return(a0 + a1 * exp(-a2 * x))
+}
+f3_worked <- log((80-100.65313)/-0.65313)/(-0.02026)
+
+f <- function(x) f3(x) - 80
+
+root <- uniroot(f, c(-10000, 100000))
+
+root_value1 <- root$root
+
+pander(paste0("This is the worked out value: ", f3_worked))
+pander(paste0("This is the uniroot value: ", root_value1))
+
+```
+
+This third model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero. 
+
+## Function 4
+
+The function for this equation is $a_0 + a_1 * x + a_2 * ln(0.005 * x + 1)$. This equation is not solvable using Algebra. The reason is because if you try to isolate one of the x's by removing the $log$ you will inevitable raise the other one. This cycle will continue for an infinite amount of times. 
+
+```{r}
+f4 <- function(x, a1=-0.0002051946, a2=0.4895432441, a0=100){
+  return(a0 + a1 * x + a2 * log((0.005 * x + 1)))
+}
+f <- function(x) f4(x) - 80
+
+root <- uniroot(f, c(0, 1000000))$root
+
+
+
+pander(paste0("Using algebraic methods it is impossible to solve this equation by hand."))
+pander(paste0("This is the uniroot value: ", root))
+```
+
+This model is consistent with what we know about LED light bulbs. What we know about them is that over time the energy will eventually begin to burn out and the light bulb will eventually lose brightness. The other benefit to this model is that it rises in the short run and then decreases in the long run. This is worth mentioning because that is how LED bulbs work. They initially will gradually increase in the amount of light produced and eventually decrease over time. 
+
+## Function 5
+
+The function for this equation is $(a_0 + a_1 * x + a_2) * e^{-a_2 * x}$. This equation is not solvable using Algebra as well. The reason is because if you try to isolate one of the x's by removing the $exponential$ you will inevitable log the other. This cycle will continue for an infinite amount of times. 
+
+```{r}
+f5 <- function(x, a1=0.000146, a2=-0.000001, a0=100){
+  return((a0 + a1 * x) * exp(-a2 * x))
+}
+f <- function(x) f5(x) - 80
+root <- uniroot(f, c(-10000000, 100000))$root
+pander(paste0("Using algebraic methods it is impossible to solve this equation by hand."))
+pander(paste0("This is the uniroot value: ", root))
+```
+
+This final model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero. 
+
+:::
+
+# Reflection
+
+::: panel-tabset
+
+## Models & Assumptions
+
+Understanding that the information from data is built upon the assumptions of the chosen model is crucial. Different models (linear or non-linear) make distinct assumptions about data relationships. This affects the way conclusions are drawn. This awareness aids in selecting the most appropriate model for their data set and research question based on the type of data. It also encourages evaluation of model assumptions to avoid misinterpretations and identify potential biases. By acknowledging the impact of model assumptions, researchers can find more meaningful insights and ensure the validity and reliability of their findings.
+
+## Learned Mathematic Ideas
+
+- I learned how to use $uniroot()$ to solve complex equations. This will help me in the future so that I can better understand complex models in a quick and efficient way.
+
+- I also learned how to critically analyze an equation and figure out roughly what the shape of the graph may be depending on the equation
+
+- I finally learned about the language of Math. This is important because I feel more able to look at equations and notation to better understand problems from a mathematical perspective
+
+## Skills Learned and Needed
+
+- With this project, I relearned the importance of **time management**. I have had a busy semester up to this point (being a TA, VP of DSS, Project Lead for 2 projects, taking classes each requiring 12+ hours a week, etc.). As such I have had a hard time balancing the time between projects. I decided the best way to get back on track is to focus on one class on a time and not try to do everything at once. This was a good reminded for me on how to be effective at time management.
+
+- I also learned the importance of **following directions**. There was a couple times during the projects that I didn't read the instructions in depth as such I was docked points. This was a good reminder of the importance of this skill. It will greatly bless me when my boss asks me to complete tasks in the future.
+
+- Finally I learned the importance of **Perseverance**. Whenever, I am struggling in a class on a question I like to stop and think on it for a day so my mind will naturally solve the problem. However, with this class I found it helpful to push through the confusion until your brain was a little tired. When you hit that point, it is important to stop get help and then keep moving forward. This will help me when doing analytics in a future company because I will be able to learn how to complete all the Lord and my future bosses may want.
+
+:::
+
+:::
+
+:::

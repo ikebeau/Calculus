@@ -3,6 +3,7 @@ title: "Project 1 Task 3"
 format: 
   html:
     code-fold: true
+    embed-resources: true
 editor: visual
 execute: 
   echo: true
@@ -22,86 +23,108 @@ f1 <- function(x, a1=0.00025830080, a0=100){
 f2 <- function(x, a1=0.0004842401, a2=-0.00000008834307, a0=100){
   return(a0 + a1 * x + a2 * x^2)
 }
-f3 <- function(x, a1=-38.96574 , a2=10.57587, a0=100.6203){
+f3 <- function(x, a1=-0.65313 , a2=0.02026, a0=100.65313){
   return(a0 + a1 * exp(-a2 * x))
 }
-f4 <- function(x, a1=-0.0002051946, a2=0.4895432441){
-  return(100 + a1 * x + a2 * log((0.005 * x + 1)))
+f4 <- function(x, a1=-0.0002051946, a2=0.4895432441, a0=100){
+  return(a0 + a1 * x + a2 * log((0.005 * x + 1)))
 }
-f5 <- function(x, a1=0.1497315, a2=0.0004607059, a0=-0.1486081){
+f5 <- function(x, a1=0.000146, a2=-0.000001, a0=100){
   return((a0 + a1 * x) * exp(-a2 * x))
 }
+x <- seq(0, 100000, 5)
+y0 <- f0(x)
+y1 <- f1(x)
+y2 <- f2(x)
+y3 <- f3(x)
+y4 <- f4(x)
+y5 <- f5(x)
 ```
-
 
 ```{r}
 bulb <- led_bulb(1, seed = 719)
 ```
 
-
-# Function 0
-
 ```{r}
-par(mfrow=c(1,2))
-plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
-abline(a = 100, b = 0)  
-plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
-abline(a = 100, b = 0)  
-par(mfrow=c(1,1))
+#par(mfrow=c(1,2))
+#plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and #Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = #c(0,80000), ylim = c(-10,120))
+#lines(x, y0)
+#plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and #Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+#lines(x, y0)
+#par(mfrow=c(1,1))
 ```
-
 
 # Function 1
 
+This is the function $f_1(t; a_0,a_1) = a_0 + a_1t$ where $t \geq 0$
+
 ```{r}
 par(mfrow=c(1,2))
 plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
-curve(f1, add = TRUE, col = "red")  
+lines(x, y1) 
 plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
-curve(f1, add = TRUE, col = "red")  
+lines(x, y1)  
 par(mfrow=c(1,1))
 ```
+
+This function does a good job at cutting through the data. Yet, it only predicts 3 dots well. The trend gets largely out of control the further the trend line goes out. It looks similar to the 5th function explanation of this data.
 
 # Function 2
 
+This is the function $f_2(t; a_0,a_1,a_2) = a_0 + a_1t + a_2t^2$ where $t \geq 0$
+
 ```{r}
 par(mfrow=c(1,2))
 plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
-curve(f2, add = TRUE, col = "red") 
+lines(x, y2)
 plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
-curve(f2, add = TRUE, col = "red")
+lines(x, y2)
 par(mfrow=c(1,1))
 ```
+
+This graph does a good job of staying between the data frame. However, after about 20,000 hours this graph seems to drop off at a large rate. This is against what we believe about LED lights. As such it may not be the best representation of the data.
 
 # Function 3
 
+This is the function $f_2(t; a_0,a_1,a_2) = a_0 + a_1t + a_2t^2$ where $t \geq 0$
+
 ```{r}
 par(mfrow=c(1,2))
 plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
-curve(f3, add = TRUE, col = "red")  
+lines(x, y3) 
 plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
-curve(f3, add = TRUE, col = "red")  
+lines(x,y3)
 par(mfrow=c(1,1))
 ```
+
+This graph out of all of them seem to follow the best. However, it seems to imply that after about 500 hours the curve begins to become flat with little change. Though this does a good job of sticking around the dataframe it seems to imply a continuous trend that is nearly flat.
 
 # Function 4
 
+This is the function $f_4(t; a_0,a_1,a_2) = a_0 + a_1t + a_2\ln(0.005t+1)$ where $t \geq 0$
+
 ```{r}
 par(mfrow=c(1,2))
 plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
-curve(f4, add = TRUE, col = "red") 
+lines(x, y4)
 plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
-curve(f4, add = TRUE, col = "red") 
+lines(x,y4) 
 par(mfrow=c(1,1))
 ```
+
+This function does a good job of cutting through the data. It describes the dots in the dataset well. The residuals seem to be minimized for sure. However, as with function 5 extrapolating beyond the point of the data shares mixed results on the effectiveness of the chart.
 
 # Function 5
 
+This is the function $f_5(t; a_0,a_1,a_2) = (a_0+a_1t)e^{-a_2t}$ where $t \geq 0$
+
 ```{r}
 par(mfrow=c(1,2))
 plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
-curve(f5, add = TRUE, col = "red") 
+lines(x, y5)
 plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
-curve(f5, add = TRUE, col = "red") 
+lines(x, y5)
 par(mfrow=c(1,1))
 ```
+
+From this one we can see that the line does a good job at going through the middle of the dots. However, it is clear that it after a while goes quite a way out of the data's scope. This means that it is representative of the data however, extrapolating the idea to longer hours is undeterminated on how accurate the model is.
