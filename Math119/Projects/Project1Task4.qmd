@@ -11,7 +11,6 @@ editor: visual
 ---
 
 ::: panel-tabset
-
 ## Building the Functions
 
 ```{r}
@@ -45,9 +44,15 @@ y4 <- f4(x)
 y5 <- f5(x)
 ```
 
+## Function 0
+
+This is the function: $f_0(t; a_0) = a_0$ where $f_0(t) = 100$ & $t \geq 0$. 
+This function is not solvable for when t = 80 because there is never a point in this model where the brightness drops below 100% of its original intensity.
+
+
 ## Function 1
 
-This is the function $f_1(t; a_0,a_1) = a_0 + a_1 * t$ We are interested in finding when $f_1(x) = 80$. To start solving this problem we will set up the equation with the values $f_1(t; a_0 = 100,a_1 = 0.00025830080) = a_0 + a_1 * t$.
+This is the function $f_1(t; a_0= 100,a_1= 0.00025830080) = a_0 + a_1 * t$ We are interested in finding when $f_1(x) = 80$. To start solving this problem we will set up the equation with the values $f_1(t) = 100 + 0.00025830080 * t$.
 
 Here are the steps
 
@@ -72,12 +77,17 @@ pander(paste0("This is the exact value: ", (-20/0.0002583008)))
 pander(paste0("This is the uniroot value: ", root_value1))
 ```
 
-This first model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero. 
-
+This first model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. Because of the constraint on the model where $t \geq 0$ there will never be a point where the statement $f_1(t) = 80$ is true.
 
 ## Function 2
 
-This is the function $f_2(t; a_0,a_1,a_2) = a_0 + a_1t + a_2t^2$ where $a_0 = 100, a_1 = 0.0004842401, a_2 = -0.00000008834307$. Steps: 1. $80 = 100 + 0.0004842401 * t - 0.00000008834307 * t^2$ 2. $0 = 20 + 0.0004842401 * t - 0.00000008834307 * t^2$ 3. Quadratic Formula: $\frac{-b\pm\sqrt{b^2-4ac}}{2a}$
+This is the function $f_2(t; a_0,a_1,a_2) = a_0 + a_1t + a_2t^2$ where $a_0 = 100, a_1 = 0.0004842401, a_2 = -0.00000008834307$. 
+
+Equation written with numbers:
+
+$f_2(t) = 100 + 0.0004842401 *t - 0.00000008834307*t^2 = 80$
+
+Steps: 1. $80 = 100 + 0.0004842401 * t - 0.00000008834307 * t^2$ 2. $0 = 20 + 0.0004842401 * t - 0.00000008834307 * t^2$ 3. Quadratic Formula: $\frac{-b\pm\sqrt{b^2-4ac}}{2a}$
 
 ```{r}
 f2_plus_worked <- (-0.0004842401 - sqrt(0.0004842401^2 - 4 * 20 * -0.00000008834307))/(2 * -0.00000008834307)
@@ -92,14 +102,19 @@ pander(paste0("This is the worked out value: ", f2_plus_worked))
 pander(paste0("This is the uniroot value: ", root_value1))
 ```
 
-This model is consistent with what we know about LED light bulbs. What we know about them is that over time the energy will eventually begin to burn out and the light bulb will eventually lose brightness. The other benefit to this model is that it rises in the short run and then decreases in the long run. This is worth mentioning because that is how LED bulbs work. They initially will gradually increase in the amount of light produced and eventually decrease over time. 
-
+This model is consistent with what we know about LED light bulbs. What we know about them is that over time the energy will eventually begin to burn out and the light bulb will eventually lose brightness. The other benefit to this model is that it rises in the short run and then decreases in the long run. This is worth mentioning because that is how LED bulbs work. They initially will gradually increase in the amount of light produced and eventually decrease over time.
 
 ## Function 3
 
 This is the function: $f_3(x; a_0, a_1, a_2) = a_0 + a_1 * e^{-a_2 * x}$ where
 
 $a_0 = 100.65313$, $a_1 = -0.65313$, and $a_2 = 0.02026$ again the model will be set equal to 80
+
+Written numerically:
+$f_3(x) = 100.65313 - 0.65313 * e^{-0.02026 * x}$
+
+
+To keep visually appealing I will use the varible in place of numbers: 
 
 In order to solve this equation by hand, the first step is to get the $e^{-a_2 * x}$ by itself. We do this by subtracting $a_0$ and dividing by $a_1$ like so $\frac{80-a_0}{a_1}=e^{-a_2 * x}$ at this point you will remove the exponential through creating a natural log $ln(\frac{80-a_0}{a_1})=a_2 * x$. After which you can divide over the $a_2$, ending with an equation like so $\frac{ln(\frac{80-a_0}{a_1})}{a_2} = x$. This will be the answer to the question.
 
@@ -120,11 +135,17 @@ pander(paste0("This is the uniroot value: ", root_value1))
 
 ```
 
-This third model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero. 
+This third model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero.
 
 ## Function 4
 
-The function for this equation is $a_0 + a_1 * x + a_2 * ln(0.005 * x + 1)$. This equation is not solvable using Algebra. The reason is because if you try to isolate one of the x's by removing the $log$ you will inevitable raise the other one. This cycle will continue for an infinite amount of times. 
+The function for this equation is $f_4(x; a_0, a_1, a_2) = a_0 + a_1 * x + a_2 * ln(0.005 * x + 1)$. 
+
+Written numerically:
+
+ $f_4(x) = 100 - 0.0002051946 * x + 0.4895432441 * ln(0.005 * x + 1) = 80$. 
+
+This equation is not solvable using Algebra. The reason is because if you try to isolate one of the x's by removing the $log$ you will inevitable raise the other one. This cycle will continue for an infinite amount of times.
 
 ```{r}
 f4 <- function(x, a1=-0.0002051946, a2=0.4895432441, a0=100){
@@ -140,11 +161,17 @@ pander(paste0("Using algebraic methods it is impossible to solve this equation b
 pander(paste0("This is the uniroot value: ", root))
 ```
 
-This model is consistent with what we know about LED light bulbs. What we know about them is that over time the energy will eventually begin to burn out and the light bulb will eventually lose brightness. The other benefit to this model is that it rises in the short run and then decreases in the long run. This is worth mentioning because that is how LED bulbs work. They initially will gradually increase in the amount of light produced and eventually decrease over time. 
+This model is consistent with what we know about LED light bulbs. What we know about them is that over time the energy will eventually begin to burn out and the light bulb will eventually lose brightness. The other benefit to this model is that it rises in the short run and then decreases in the long run. This is worth mentioning because that is how LED bulbs work. They initially will gradually increase in the amount of light produced and eventually decrease over time.
 
 ## Function 5
 
-The function for this equation is $(a_0 + a_1 * x + a_2) * e^{-a_2 * x}$. This equation is not solvable using Algebra as well. The reason is because if you try to isolate one of the x's by removing the $exponential$ you will inevitable log the other. This cycle will continue for an infinite amount of times. 
+The function for this equation is $f_5(x; a_0, a_1, a_2) = (a_0 + a_1 * x + a_2) * e^{-a_2 * x} = 80$. 
+
+Or written in numeric terms:
+
+$f_5(x) = (100 + 0.000146 * x - 0.000001) * e^{0.000001 * x}$
+
+This equation is not solvable using Algebra as well. The reason is because if you try to isolate one of the x's by removing the $exponential$ you will inevitable log the other. This cycle will continue for an infinite amount of times.
 
 ```{r}
 f5 <- function(x, a1=0.000146, a2=-0.000001, a0=100){
@@ -156,6 +183,5 @@ pander(paste0("Using algebraic methods it is impossible to solve this equation b
 pander(paste0("This is the uniroot value: ", root))
 ```
 
-This final model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero. 
-
+This final model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero.
 :::

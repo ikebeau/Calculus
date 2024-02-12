@@ -10,26 +10,21 @@ execute:
 editor: visual
 ---
 
-
-
 ::: panel-tabset
-
 # Background
 
 ::: panel-tabset
-
 ## LED
 
 ### What is LED?
 
-[Light-emitting diode (LED) is a widely used standard source of light in electrical equipment. They are mostly found in applications within devices that show the time and display different types of data. The colour of an LED is determined by the material used in the semiconducting element.](https://byjus.com/physics/light-emitting-diode/) 
-A light-emitting diode (LED) is a semiconductor device that emits light when an electric current flows through it
+[Light-emitting diode (LED) is a widely used standard source of light in electrical equipment. They are mostly found in applications within devices that show the time and display different types of data. The colour of an LED is determined by the material used in the semiconducting element.](https://byjus.com/physics/light-emitting-diode/) A light-emitting diode (LED) is a semiconductor device that emits light when an electric current flows through it
 
 ### What is Lumen?
 
-The definition of lumen is: “a unit of luminous flux in the International System of Units, that is equal to the amount of light given out through a solid angle by a source of one candela intensity radiating equally in all directions.”  
+The definition of lumen is: “a unit of luminous flux in the International System of Units, that is equal to the amount of light given out through a solid angle by a source of one candela intensity radiating equally in all directions.”
 
-[In short, lumens equal brightness. And watts do not. Not that watts are bad, but they measure energy use, not light output. With new, energy-efficient LED technology, we can no longer rely upon wattage to indicate how bright a bulb is. See how to measure lumens below:](https://www.lumens.com/the-edit/the-guides/light-bulb-facts-the-meaning-of-lumens/?clickid=Wcb1IpTmPxyPWCty-6Ww21zPUkH2baQfFQts3k0&utm_medium=affiliate&utm_source=ir&irgwc=1&im_rewards=1)  
+[In short, lumens equal brightness. And watts do not. Not that watts are bad, but they measure energy use, not light output. With new, energy-efficient LED technology, we can no longer rely upon wattage to indicate how bright a bulb is. See how to measure lumens below:](https://www.lumens.com/the-edit/the-guides/light-bulb-facts-the-meaning-of-lumens/?clickid=Wcb1IpTmPxyPWCty-6Ww21zPUkH2baQfFQts3k0&utm_medium=affiliate&utm_source=ir&irgwc=1&im_rewards=1)
 
 ![Incandecent vs LED](Lumen_Watts.png)
 
@@ -52,15 +47,11 @@ In the graph we can see that there is an upward trend that as the hours of use i
 ```{r}
 plot(bulb$hours, bulb$percent_intensity, main = "Correlation between Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
 ```
-
-
-
 :::
 
 # Analyzing the Functions
 
 ::: panel-tabset
-
 ```{r}
 f_0 <- function(x, a_0){
     return(a_0)
@@ -82,16 +73,11 @@ f_5 <- function(x, a_0, a_1, a_2){
 }
 ```
 
-
 ### Note:
 
 **I decided to evaluate all the functions but will only graph 2 of them. Namely** $f_3(x)$ **&** $f_5(x)$.
 
-
-
 ### Function 3
-
-
 
 The equation of $f_3(x)$ is as follows $f_3(x; a_0, a_1, a_2) = a_0 + a_1 * e^{-a_2 * x}$. This type of equation is commonly used for exponential decay of items. As such I will refer to the graph components in the context of decay.
 
@@ -103,34 +89,25 @@ $a_1$ is a constant. As this number changes it will affect the degree or magnitu
 
 $a_2$ is a constant. As this number changes it affects the rate at which the variables or object decays.
 
-
-
-
 ```{r}
 
 ```
 
 ### Function 4
 
-
 The equation of $f_4(x)$ is as follows $f_4(x; a_0, a_1, a_2) = a_0 + a_1 * x + a_2$
 
 $x$ is the input variable so as that number changes movement across the x-axis changes at the same rate
 
-$a_0$ & $a_2$ are constants. These affect the vertical shift of the graph. As the values increase so does the vertical or y-intercept. They work together, and yet work seprately (they can be their own unique values) Thus making it so they affect the value together. In Linear Regression $a_2$ is commonly used with an $x_{2i}$ in order to turn a_2 into a variable to create a seperate line. However, as this does not exist they work in tandem. 
+$a_0$ & $a_2$ are constants. These affect the vertical shift of the graph. As the values increase so does the vertical or y-intercept. They work together, and yet work seprately (they can be their own unique values) Thus making it so they affect the value together. In Linear Regression $a_2$ is commonly used with an $x_{2i}$ in order to turn a_2 into a variable to create a seperate line. However, as this does not exist they work in tandem.
 
 $a_1$ is a constant that affects the slope or steepness of the line.
-
-
 
 ```{r}
 
 ```
 
-
 ### Function 5
-
-
 
 The equation of $f_5(x)$ is as follows $f_5(x; a_0, a_1, a_2) = (a_0 + a_1 * x) * e^{-a_2 * x}$
 
@@ -138,8 +115,7 @@ $x$ is the input variable so as that number changes movement across the x-axis c
 
 $a_0$ and $a_1$ create the linear part of the equation. $a_0$ controls the intercept. $a_1$ controls the slope and steepness of that line.
 
-$a_2$ however,  influences the exponential decay rate with $x$
-
+$a_2$ however, influences the exponential decay rate with $x$
 
 ### Graphs
 
@@ -147,23 +123,21 @@ $a_2$ however,  influences the exponential decay rate with $x$
 
 `Note: The 1st value is the blue line the 2nd is the red`
 
-*a0_values <- c(1, 2)*
+*a0_values \<- c(1, 2)*
 
-*a1_values <- c(2, 4)*
+*a1_values \<- c(2, 4)*
 
-*a2_values <- c(0.1, 4)*
+*a2_values \<- c(0.1, 4)*
 
 `Note: This creates a vector from 0 to 30 incrementing by 0.5`
 
-*x <- seq(0, 30, .5)*
+*x \<- seq(0, 30, .5)*
 
 `Note: Creation of y values for respective functions`
 
-*y_3 <- f_3(x, a0_values, a1_values, a2_values)*
+*y_3 \<- f_3(x, a0_values, a1_values, a2_values)*
 
-*y_5 <- f_5(x, a0_values, a1_values, a2_values)*
-
-
+*y_5 \<- f_5(x, a0_values, a1_values, a2_values)*
 
 ```{r, warning=FALSE}
 
@@ -189,19 +163,16 @@ par(mfrow = c(1, 1))
 
 ```
 
-As is stated above the graphs rendered show the values for $f_3(x)$ and $f_5x$. Each of the values. 
+As is stated above the graphs rendered show the values for $f_3(x)$ and $f_5x$. Each of the values.
 
-In the first graph $a_0$ affects the asymptote of the graph. $a_1$ affects the start location of the trend. $a_2$ will affect the steepness of the trend. 
+In the first graph $a_0$ affects the asymptote of the graph. $a_1$ affects the start location of the trend. $a_2$ will affect the steepness of the trend.
 
 In the second graph $a_0$ affects the assymptote of the graph.The $a_1$ variable will affect the start location on the x-axis of the leveling off. The $a_2$ variable will affect the steepness of the trend.
-
-
 :::
 
 # Graphing
 
 ::: panel-tabset
-
 # Creating Functions
 
 ```{r}
@@ -320,7 +291,6 @@ par(mfrow=c(1,1))
 ```
 
 From this one we can see that the line does a good job at going through the middle of the dots. However, it is clear that it after a while goes quite a way out of the data's scope. This means that it is representative of the data however, extrapolating the idea to longer hours is undeterminated on how accurate the model is.
-
 :::
 
 # Finding the 80%
@@ -386,8 +356,7 @@ pander(paste0("This is the exact value: ", (-20/0.0002583008)))
 pander(paste0("This is the uniroot value: ", root_value1))
 ```
 
-This first model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero. 
-
+This first model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero.
 
 ## Function 2
 
@@ -406,8 +375,7 @@ pander(paste0("This is the worked out value: ", f2_plus_worked))
 pander(paste0("This is the uniroot value: ", root_value1))
 ```
 
-This model is consistent with what we know about LED light bulbs. What we know about them is that over time the energy will eventually begin to burn out and the light bulb will eventually lose brightness. The other benefit to this model is that it rises in the short run and then decreases in the long run. This is worth mentioning because that is how LED bulbs work. They initially will gradually increase in the amount of light produced and eventually decrease over time. 
-
+This model is consistent with what we know about LED light bulbs. What we know about them is that over time the energy will eventually begin to burn out and the light bulb will eventually lose brightness. The other benefit to this model is that it rises in the short run and then decreases in the long run. This is worth mentioning because that is how LED bulbs work. They initially will gradually increase in the amount of light produced and eventually decrease over time.
 
 ## Function 3
 
@@ -434,11 +402,11 @@ pander(paste0("This is the uniroot value: ", root_value1))
 
 ```
 
-This third model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero. 
+This third model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero.
 
 ## Function 4
 
-The function for this equation is $a_0 + a_1 * x + a_2 * ln(0.005 * x + 1)$. This equation is not solvable using Algebra. The reason is because if you try to isolate one of the x's by removing the $log$ you will inevitable raise the other one. This cycle will continue for an infinite amount of times. 
+The function for this equation is $a_0 + a_1 * x + a_2 * ln(0.005 * x + 1)$. This equation is not solvable using Algebra. The reason is because if you try to isolate one of the x's by removing the $log$ you will inevitable raise the other one. This cycle will continue for an infinite amount of times.
 
 ```{r}
 f4 <- function(x, a1=-0.0002051946, a2=0.4895432441, a0=100){
@@ -454,11 +422,11 @@ pander(paste0("Using algebraic methods it is impossible to solve this equation b
 pander(paste0("This is the uniroot value: ", root))
 ```
 
-This model is consistent with what we know about LED light bulbs. What we know about them is that over time the energy will eventually begin to burn out and the light bulb will eventually lose brightness. The other benefit to this model is that it rises in the short run and then decreases in the long run. This is worth mentioning because that is how LED bulbs work. They initially will gradually increase in the amount of light produced and eventually decrease over time. 
+This model is consistent with what we know about LED light bulbs. What we know about them is that over time the energy will eventually begin to burn out and the light bulb will eventually lose brightness. The other benefit to this model is that it rises in the short run and then decreases in the long run. This is worth mentioning because that is how LED bulbs work. They initially will gradually increase in the amount of light produced and eventually decrease over time.
 
 ## Function 5
 
-The function for this equation is $(a_0 + a_1 * x + a_2) * e^{-a_2 * x}$. This equation is not solvable using Algebra as well. The reason is because if you try to isolate one of the x's by removing the $exponential$ you will inevitable log the other. This cycle will continue for an infinite amount of times. 
+The function for this equation is $(a_0 + a_1 * x + a_2) * e^{-a_2 * x}$. This equation is not solvable using Algebra as well. The reason is because if you try to isolate one of the x's by removing the $exponential$ you will inevitable log the other. This cycle will continue for an infinite amount of times.
 
 ```{r}
 f5 <- function(x, a1=0.000146, a2=-0.000001, a0=100){
@@ -470,36 +438,32 @@ pander(paste0("Using algebraic methods it is impossible to solve this equation b
 pander(paste0("This is the uniroot value: ", root))
 ```
 
-This final model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero. 
-
+This final model is inconsistent with the knowledge we have about LED light bulbs. It is inconsistent because, you cannot have a negative number of hours of use for a light bulb, or anything for that matter. The model suggests that if you go on for an infinite number of hours you will never decrease below zero.
 :::
 
 # Reflection
 
 ::: panel-tabset
-
 ## Models & Assumptions
 
 Understanding that the information from data is built upon the assumptions of the chosen model is crucial. Different models (linear or non-linear) make distinct assumptions about data relationships. This affects the way conclusions are drawn. This awareness aids in selecting the most appropriate model for their data set and research question based on the type of data. It also encourages evaluation of model assumptions to avoid misinterpretations and identify potential biases. By acknowledging the impact of model assumptions, researchers can find more meaningful insights and ensure the validity and reliability of their findings.
 
 ## Learned Mathematic Ideas
 
-- I learned how to use $uniroot()$ to solve complex equations. This will help me in the future so that I can better understand complex models in a quick and efficient way.
+-   I learned how to use $uniroot()$ to solve complex equations. This will help me in the future so that I can better understand complex models in a quick and efficient way.
 
-- I also learned how to critically analyze an equation and figure out roughly what the shape of the graph may be depending on the equation
+-   I also learned how to critically analyze an equation and figure out roughly what the shape of the graph may be depending on the equation
 
-- I finally learned about the language of Math. This is important because I feel more able to look at equations and notation to better understand problems from a mathematical perspective
+-   I finally learned about the language of Math. This is important because I feel more able to look at equations and notation to better understand problems from a mathematical perspective
 
 ## Skills Learned and Needed
 
-- With this project, I relearned the importance of **time management**. I have had a busy semester up to this point (being a TA, VP of DSS, Project Lead for 2 projects, taking classes each requiring 12+ hours a week, etc.). As such I have had a hard time balancing the time between projects. I decided the best way to get back on track is to focus on one class on a time and not try to do everything at once. This was a good reminded for me on how to be effective at time management.
+-   With this project, I relearned the importance of **time management**. I have had a busy semester up to this point (being a TA, VP of DSS, Project Lead for 2 projects, taking classes each requiring 12+ hours a week, etc.). As such I have had a hard time balancing the time between projects. I decided the best way to get back on track is to focus on one class on a time and not try to do everything at once. This was a good reminded for me on how to be effective at time management.
 
-- I also learned the importance of **following directions**. There was a couple times during the projects that I didn't read the instructions in depth as such I was docked points. This was a good reminder of the importance of this skill. It will greatly bless me when my boss asks me to complete tasks in the future.
+-   I also learned the importance of **following directions**. There was a couple times during the projects that I didn't read the instructions in depth as such I was docked points. This was a good reminder of the importance of this skill. It will greatly bless me when my boss asks me to complete tasks in the future.
 
-- Finally I learned the importance of **Perseverance**. Whenever, I am struggling in a class on a question I like to stop and think on it for a day so my mind will naturally solve the problem. However, with this class I found it helpful to push through the confusion until your brain was a little tired. When you hit that point, it is important to stop get help and then keep moving forward. This will help me when doing analytics in a future company because I will be able to learn how to complete all the Lord and my future bosses may want.
-
+-   Finally I learned the importance of **Perseverance**. Whenever, I am struggling in a class on a question I like to stop and think on it for a day so my mind will naturally solve the problem. However, with this class I found it helpful to push through the confusion until your brain was a little tired. When you hit that point, it is important to stop get help and then keep moving forward. This will help me when doing analytics in a future company because I will be able to learn how to complete all the Lord and my future bosses may want.
 :::
-
 :::
 
 :::
