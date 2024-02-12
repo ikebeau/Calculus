@@ -47,7 +47,9 @@ y5 <- f5(x)
 ## Function 0
 
 This is the function: $f_0(t; a_0) = a_0$ where $f_0(t) = 100$ & $t \geq 0$. 
-This function is not solvable for when t = 80 because there is never a point in this model where the brightness drops below 100% of its original intensity.
+This function is not solvable for when the output is 80 because there is never a point in this model where the brightness drops below 100% of its original intensity.
+
+$f_0(t) = 100 = 80$
 
 
 ## Function 1
