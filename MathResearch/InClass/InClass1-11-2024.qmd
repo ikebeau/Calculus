@@ -1,0 +1,52 @@
+---
+title: "Week 1 In Class"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+df <- c(-2, -1, 0, 1, 2, 3, 4, 5)
+df2 <- seq(-2, 5, .5)
+df1 <- df^2
+df1
+```
+
+```{r}
+plot(df)
+plot(df, df^2)
+plot(df, df1, type="l")
+plot(df2, df2^2, type="l")
+```
+
+```{r}
+ggplot() + 
+  stat_function(fun = function(x) x^2, xlim=c(-2, 5))
+```
+
+```{r}
+f <- function(x) {
+  x^2 
+}
+f(df)
+
+```
+
+```{r}
+ggplot() +
+  stat_function(fun = function(x) {
+    if(x < 1) {
+      2*x
+    }
+    else{3}})
+```
+
+```{r}
+ggplot() +
+  stat_function(fun = function(x) {
+    ifelse(x < 1, 2*x, 3)
+  }, xlim=c(-2, 5))
+```

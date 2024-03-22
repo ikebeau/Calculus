@@ -1,0 +1,142 @@
+---
+title: "Task 1"
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+execute: 
+  echo: false
+  warning: false
+editor: visual
+---
+
+::: panel-tabset
+# Base assumptions
+
+## Project Assumptions
+
+**These Assumptions will be applied to each model to simplify the calculations**
+
+The base equation for a normal distribution (mean of 0 sd of 1) is $f(r) = \frac{1}{\sqrt{2\pi}}e^{-r^2/2}$.
+
+An assumption to make the equation simpler is
+
+$r_i = y_i - f_{n}(t)$
+
+Because:
+
+$f(r_i) = \frac{1}{\sqrt{2\pi}}e^{-r_i^2/2} = \frac{1}{\sqrt{2\pi}}e^{-(y_i - f_{n}(t))^2/2}$
+
+The only thing to change from this next part equation to equation is if $a_2$ is used and what the equation is. The logic is the same. An important note is that the values will have a negative carried through all values of the function.
+
+$\begin{align*} \mathscr{l_k(a_1, a_2 (if needed); t, y)} &= \ln(L_k(a_1, a_2 (if needed);\textbf{t},\textbf{y})) &\text{(definition)}\\ &= \ln\left(\prod_{i=1}^{44}\frac{1}{\sqrt{2\pi}}e^{-\left(y_i - (f_{n}(t))\right)^2/2}\right) &\text{(substitution)}\\ &= \sum_{i=1}^{44}\ln\left(\frac{1}{\sqrt{2\pi}}e^{-\left(y_i - (f_n(t))\right)^2/2}\right) &\text{(logs turn products to sums)}\\ &= \sum_{i=1}^{44}\left(\ln\left(\frac{1}{\sqrt{2\pi}}\right)+\ln\left(e^{-\left(y_i - (f_n(t))\right)^2/2}\right)\right)&\text{(another product to sum)}\\ &= \sum_{i=1}^{44}\ln\left(\frac{1}{\sqrt{2\pi}}\right)+\sum_{i=1}^{44}\ln\left(e^{-\left(y_i - (f_n(t))\right)^2/2}\right)&\text{(separate the sum)}\\ &= \ln\left(\frac{1}{\sqrt{2\pi}}\right)\sum_{i=1}^{44}1+\sum_{i=1}^{44}\ln\left(e^{-\left(y_i - (f_n(t))\right)^2/2}\right)&\text{(pull out constant)}\\ &= \ln\left(\frac{1}{\sqrt{2\pi}}\right)\sum_{i=1}^{44}1+\sum_{i=1}^{44}-\frac{1}{2}\left(y_i - (f_n(t))\right)^2\ln\left(e\right)&\text{(bring power down)}\\ &= 44\ln\left(\frac{1}{\sqrt{2\pi}}\right)-\frac{1}{2}\sum_{i=1}^{44}\left(y_i - (f_n(t))\right)^2&\text{(simplify, note 44 sums of 1 equals 44)}. \end{align*}$
+
+This logic will be applied to each of the following problems. The reason for this is so that we can get a simple reproducible pattern to solve each of the equations.
+
+For each of the problems we will assume there is a total of 44 data points. We will also assume we are building a log likelihood function. For this reason we can build the assumption for each function that $44ln(\frac{1}{\sqrt{2\pi}})$. This part of the equation will build the framework for our probability distribution. Whereas the next part will be the iterations to build the counts and spread for our distribution. In order to do this each part will be subtracted by the rest of the equation.
+
+The other assumption is $-\frac{1}{2}\sum_{i=1}^{44}(y_i - (f_n(t_i))^2$
+
+So the final build to solve each of the models is:
+
+$44ln(\frac{1}{\sqrt{2\pi}}) - \frac{1}{2}\sum_{i=1}^{44}(y_i - (f_n(t_i))^2$
+
+**General Rules Applied**
+
+-   Summation of a Constant: For the constant term in the log-likelihood function.
+
+-   Properties of Logarithms: Not directly used in differentiation but relevant in understanding the structure of log-likelihood functions.
+
+# Function 1
+
+```{r}
+library(data4led)
+bulbs <- led_bulb(1, seed=719)
+```
+
+**Beginning Problem**
+
+$f_1(t; a_1) = 100 + a_1t$ where $t \geq 0$
+
+**End Result**
+
+$\ell_1(a_1; \mathbf{t},\mathbf{y}) = 44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i - 100 - a_1t_i)^2$
+
+This is a linear model.
+
+-   I used the sum and difference rule when differentiating the squared term in the log-likelihood function, which is a sum/difference of terms.
+
+-   I used the power rule when differentiating the squared term (as $t^2$) in the log-likelihood function.
+
+# Function 2
+
+**Beginning Problem**
+
+$f_2(t; a_1,a_2) = 100 + a_1t +a_2t^2$ where $t \geq 0$
+
+**End Result**
+
+$\ell_2(a_1,a_2; \mathbf{t},\mathbf{y}) = 44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i - 100 - a_1t_i - a_2t_i^2)^2$
+
+This model involves a quadratic term.
+
+-   I used the sum and difference rule for differentiating the combination of terms within the squared error.
+
+-   I used the power rule for differentiating the $t^2$ term.
+
+# Function 4
+
+**Beginning Problem**
+
+$f_4(t; a_1,a_2) = 100 + a_1t + a_2\ln(0.005t+1)$ where $t \geq 0$
+
+**End Result**
+
+$\ell_4(a_1,a_2; \mathbf{t},\mathbf{y}) = 44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i - 100 - a_1t_i - a_2\ln(0.005t_i+1))^2$
+
+This model incorporates a logarithmic term
+
+-   I used the sum and difference rule for the combined terms in the squared error.
+
+-   I used the Power Rule for the $t$ term.
+
+-   I used the chain rule for differentiating the logarithmic term $ln(0.005 + 1)$.
+
+-   I used the natural logarithm rule as part of differentiating the logarithmic term.
+
+# Function 5
+
+**Beginning Problem**
+
+$f_5(t; a_1) = 100e^{-0.00005t} + a_1te^{-0.00005t}$ where $t \geq 0$
+
+**End Result**
+
+$\ell_5(a_1; \mathbf{t},\mathbf{y}) = 44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i - 100e^{-0.00005t_i} - a_1t_ie^{-0.00005t_i})^2$
+
+This exponential model uses:
+
+-   I used the sum and difference rule for the sum of exponential terms.
+
+-   I used the Exponential Rule for differentiating the exponential term $e^{-0.00005t}$
+
+-   I used the Product Rule for the term $a_1te^{-0.00005t}$, which is a product of t and an exponential function.
+
+-   Chain Rule: For differentiating the composite function involving $t$ and the exponential term.
+
+# Function 6
+
+**Beginning Problem**
+
+$f_6(t; a_1,a_2) = 100 + a_1t + a_2(1-e^{-0.0003t})$ where $t \geq 0$
+
+**End Result**
+
+$\ell_6(a_1,a_2; \mathbf{t},\mathbf{y}) = 44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i - 100 - a_1t_i - a_2(1-e^{-0.0003t_i}))^2$
+
+-   I used the Sum and Difference Rule for the combination of terms in the squared error.
+
+-   I used the Power Rule for the $t$ term.
+
+-   I used the Exponential Rule for differentiating the exponential term $e^{-0.0003t}$.
+:::

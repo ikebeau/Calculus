@@ -1,0 +1,146 @@
+---
+title: "Project 3"
+author: "Isaac Beaumont"
+format:
+  html:
+    code-fold: true
+    embed-resources: true
+execute: 
+  echo: true
+  warning: false
+editor: visual
+---
+
+# Task 1
+
+```{r}
+library(data4soils)
+library(tidyverse)
+library(fishualize)
+Ng <- data4soils::cfbp_fpjuliet$ng
+```
+
+::: panel-tabset
+# Distributions
+
+## The Uniform Distribution
+
+$f_0(x; a,b) = \frac{1}{b-a}$ with $-\infty < \mu < \infty$, $\sigma < 0$, and $-\infty < x < \infty$
+
+## The Normal Distribution
+
+$f_1(x; \mu,\sigma) = \frac{1}{\sqrt{2\pi \sigma^2}}e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}$ with $\alpha > 0$,$\beta > 0$, and $x \ge 0$ (and 0 otherwise)
+
+## The Gamma Distribution
+
+$f_2(x; \alpha,\beta) = \frac{\beta^{\alpha}}{\Gamma(\alpha)}x^{\alpha-1}e^{-\beta x}$ with $\alpha > 0$, $\beta > 0$, and $x \ge 0$ (and 0 otherwise)
+
+## The Exponential Distribution
+
+$f_3(x; \lambda) = \lambda e^{-\lambda x}$ with $\lambda > 0$ and $x \ge 0$ (and 0 otherwise)
+
+# What is Ng?
+
+Nitroglycerin (Ng) is an element. It is commonly used in medicines and explosives. Within this data there is different measurements of nitroglycerin. Specifically it is interested in the amount of Ng present within the soil. After a war there is often left over residue of this chemical within the soil and groud of the areas exposed to the explosives. Ng has been known to cause cancer, as such we would like to study the soil and know the hazardness level. The toxic threshold considered in this study is 10 mg/kg. Meaning for every kg or dirt there should at max be 10 mg of Ng present within the sample a total of 100 samples was taken for this data.
+
+# Exploration
+
+## Ng Analyzing
+
+```{r}
+hist(Ng, probability = TRUE, density = TRUE, col = "blue")
+pander::pander(paste0("This is the mean of the Ng Data: ", mean(Ng)))
+pander::pander(paste0("This is the variance of the Ng Data: ", var(Ng)))
+```
+
+This histogram above shows us the spread of the data for Ng Concentration measurements. One important finding about Ng is that it is a right skewed distribution meaning it is less likely to have a higher value than a lower value.
+
+## Exponential
+
+```{r}
+lambdas <- c(-2, -1, 0, 1, 2)
+m_values <- seq(0, 15, 0.01)
+
+exponential <- function(lambda, m){
+  lambda * exp(-lambda * m)
+}
+
+data <- expand.grid(lambda = lambdas, m = m_values) %>%
+  mutate(exponential = exponential(lambda, m))
+
+ggplot(data, aes(x = m, y = exponential, color = as.factor(lambda))) + 
+  geom_line(lwd = 1) + 
+  theme_bw() + 
+  scale_fill_fish_d(option = "Scarus_quoyi") + 
+  facet_wrap(~lambda, scales = "free_y") + 
+  labs(x = "m", y = "exponential value")
+
+```
+
+In this we can see the graph for an exponential function and how the lambda variable will affect it over time. As can be seen when it is negative it will quickly climb. However, positive lambdas will decrease slower. If you have a 0 lambda the line will be flat.
+
+## Visual Fits
+
+```{r}
+f2 <- function(m, alpha, beta) {
+  (beta^alpha) / gamma(alpha) * m^(alpha-1) * exp(-beta * m)
+}
+
+f3 <- function(m, lambda) {
+  lambda * exp(-lambda * m)
+}
+
+alpha <- 2
+beta <- .91
+lambda <- 0.7
+  
+# 1 / mean(Ng)
+# m_values <- seq(min(Ng), max(Ng), length.out = 100)
+f2_values <- f2(m_values, alpha, beta)
+f3_values <- f3(m_values, lambda)
+
+hist(Ng, freq = FALSE, xlim = range(c(m_values, Ng)), main = "Density Histogram",
+     xlab = "Nitroglycerin Measurement", ylab = "Density")
+
+lines(m_values, f2_values, col = "red", lwd = 2)
+lines(m_values, f3_values, col = "blue", lwd = 2)
+
+legend("topright", legend = c("f2 (Gamma Distribution)", "f3 (Exponential Distribution)"), 
+       col = c("red", "blue"), lty = 1, lwd = 2)
+
+```
+
+This graph fits the data for the density curve based on the different types of distributions. As can be seen the Exponential decay is much faster whereas the gamma is longer in time to decay in this case.
+
+**These are the measurements for the gamma distribution.**
+
+```{r}
+set.seed(719) 
+alpha <- 2  
+beta <- 0.91
+simulation <- rgamma(25000, shape = alpha, rate = beta)
+
+num <- length(which(simulation > 10))
+
+prob <- num / 25000
+
+pander::pander(cat("Number of measurements exceeding 10 mg/kg:", num, "\n"))
+pander::pander(cat("Approximate probability of exceeding 10 mg/kg:", prob, "\n"))
+
+```
+
+**These are the measurements for the exponential distribution.**
+
+```{r}
+
+set.seed(719)
+lambda <- 0.7
+
+simulate_exp <- rexp(25000, rate=lambda)
+num_exp <- length(which(simulate_exp > 10))
+prob_exp <- num_exp / 25000
+
+pander::pander(cat("Number of measurements exceeding 10 mg/kg:", num_exp, "\n"))
+pander::pander(cat("Approximate probability of exceeding 10 mg/kg:", prob_exp, "\n"))
+```
+:::

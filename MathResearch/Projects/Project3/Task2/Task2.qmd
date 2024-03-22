@@ -1,0 +1,16 @@
+---
+title: "Project 3"
+author: "Isaac Beaumont"
+format:
+  html:
+    code-fold: true
+    embed-resources: true
+execute: 
+  echo: true
+  warning: false
+editor: visual
+---
+
+# Task 2
+
+

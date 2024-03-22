@@ -1,0 +1,155 @@
+---
+title: "Project 1 Task 3"
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+editor: visual
+execute: 
+  echo: true
+  warning: false
+---
+
+::: panel-tabset
+# Function 0
+
+The equation for this graphic is $f_0(t; a_0) = a_0$ where $t\geq 0$ & $a_0 = 100$. With the numeric values of $f_0(t) = 100$
+
+```{r}
+library(data4led)
+f0 <- function(x, a0=100){
+  if (length(x) > 1) {
+    return(rep(a0, length(x)))
+  } else {
+    return(a0)
+  }
+}
+f1 <- function(x, a1=0.00025830080, a0=100){
+  return(a0 + (a1 * x))
+}
+f2 <- function(x, a1=0.0004842401, a2=-0.00000008834307, a0=100){
+  return(a0 + a1 * x + a2 * x^2)
+}
+f3 <- function(x, a1=-0.65313 , a2=0.02026, a0=100.65313){
+  return(a0 + a1 * exp(-a2 * x))
+}
+f4 <- function(x, a1=-0.0002051946, a2=0.4895432441, a0=100){
+  return(a0 + a1 * x + a2 * log((0.005 * x + 1)))
+}
+f5 <- function(x, a1=0.000146, a2=-0.000001, a0=100){
+  return((a0 + a1 * x) * exp(-a2 * x))
+}
+x <- seq(0, 100000, 5)
+y0 <- f0(x)
+y1 <- f1(x)
+y2 <- f2(x)
+y3 <- f3(x)
+y4 <- f4(x)
+y5 <- f5(x)
+```
+
+```{r}
+bulb <- led_bulb(1, seed = 719)
+```
+
+```{r}
+par(mfrow=c(1,2))
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
+lines(x, y0) 
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+lines(x, y0)  
+par(mfrow=c(1,1))
+```
+
+The story with this graph is that when the light bulb turns on it will start at 100% of its original intensity. As time goes on the light bulb will continue at the same brightness at the original time indefinetly. This is not true with what we currently believe about LED light bulbs so this model is not useful in the longrun and only with the first value.
+
+# Function 1
+
+This is the function $f_1(t; a_0=100,a_1=0.00025830080) = a_0 + a_1* t$ where $t \geq 0$. With the numeric values the equation is as follows $f_1(t) = 100 + 0.00025830080* t$
+
+```{r}
+f1 <- function(x, a1=0.00025830080, a0=100){
+  return(a0 + (a1 * x))
+}
+par(mfrow=c(1,2))
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
+lines(x, y1) 
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+lines(x, y1)  
+par(mfrow=c(1,1))
+```
+
+This function presents the idea that the light bulb will indefinitely increase over time. This light bulb model is neither practical or helpful. It also would be dangerous to have light bulbs that continuously hold brightness.
+
+# Function 2
+
+This is the function $f_2(t; a_0=100,a_1=0.0004842401,a_2=-0.00000008834307) = a_0 + a_1t + a_2t^2$ where $t \geq 0$. With the numeric values the equation is as follows $f_2(t) = 100 + 0.0004842401 * t - 0.00000008834307 *t^2$
+
+```{r}
+f2 <- function(x, a1=0.0004842401, a2=-0.00000008834307, a0=100){
+  return(a0 + a1 * x + a2 * x^2)
+}
+par(mfrow=c(1,2))
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
+lines(x, y2)
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+lines(x, y2)
+par(mfrow=c(1,1))
+```
+
+This model is more consistent with what we understand about models of light bulbs. At the start of the light bulbs life it begins to shine. Over the short run it will increase in brightness. However, as time increases it will eventually die, at around 40,000 hours.
+
+# Function 3
+
+This is the function $f_3(t; a_0=100.65313,a_1=-0.65313,a_2=0.02026) = a_0 + a_1 * exp^{-a_2 * t}$ where $t \geq 0$. With the numeric values the equation is as follows: $f_3(t) = 100.65313 - 0.65313 * exp^{-0.02026 * t}$
+
+```{r}
+f3 <- function(x, a1=-0.65313 , a2=0.02026, a0=100.65313){
+  return(a0 + a1 * exp(-a2 * x))
+}
+par(mfrow=c(1,2))
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
+lines(x, y3) 
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+lines(x,y3)
+par(mfrow=c(1,1))
+```
+
+This model though unrealistic implies that the light bulbs intensity will initially rise. As time continues it will level off and have a $0.07%$ increase. This is not consistent with the knowledge we have about the data. The reason for this is because light bulbs eventually die.
+
+# Function 4
+
+This is the function $f_4(t; a_0=100,a_1=-0.0002051946,a_2=0.4895432441) = a_0 + a_1t + a_2\ln(0.005t+1)$ where $t \geq 0$ With numeric values: $f_4(t) = 100 + -0.0002051946 * t + 0.4895432441 * ln(0.005t+1)$
+
+```{r}
+f4 <- function(x, a1=-0.0002051946, a2=0.4895432441, a0=100){
+  return(a0 + a1 * x + a2 * log((0.005 * x + 1)))
+}
+par(mfrow=c(1,2))
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
+lines(x, y4)
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+lines(x,y4) 
+par(mfrow=c(1,1))
+```
+
+This model is true to what we believe about light bulbs. Light bulbs will start at 100% intensity. As time continues it will increase above its initial intensity. After some time it will decrease in brightness. This is a great example of a good model according to the information we have.
+
+# Function 5
+
+This is the function $f_5(t; a_0,a_1,a_2) = (a_0+a_1t)e^{-a_2t}$ where $t \geq 0$ With numeric values: $f_5(t) = (100 + 0.000146 * t) * e^{0.000001 * t}$
+
+```{r}
+f5 <- function(x, a1=0.000146, a2=-0.000001, a0=100){
+  return((a0 + a1 * x) * exp(-a2 * x))
+}
+par(mfrow=c(1,2))
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)", xlim = c(0,80000), ylim = c(-10,120))
+lines(x, y5)
+plot(bulb$hours, bulb$percent_intensity, main = "Bulb Hours and Intensity (%)", xlab = "Hours", ylab = "Intensity(%)")
+lines(x, y5)
+par(mfrow=c(1,1))
+```
+
+This model is not good at what we understand about light bulbs. The model implies that the trend will start where all of them do with their original intensity. However, it assumes that the light bulb will continuously increase in intensity. Similar to $f_1$ this is not a light bulb that someone would want to have.
+:::

@@ -1,0 +1,898 @@
+---
+title: "Project 2"
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+execute: 
+  warning: false
+editor: visual
+---
+
+::: panel-tabset
+
+# Background
+
+::: panel-tabset
+## LED
+
+### What is LED?
+
+[Light-emitting diode (LED) is a widely used standard source of light in electrical equipment. They are mostly found in applications within devices that show the time and display different types of data. The colour of an LED is determined by the material used in the semiconducting element.](https://byjus.com/physics/light-emitting-diode/) A light-emitting diode (LED) is a semiconductor device that emits light when an electric current flows through it
+
+### What is Lumen?
+
+The definition of lumen is: “a unit of luminous flux in the International System of Units, that is equal to the amount of light given out through a solid angle by a source of one candela intensity radiating equally in all directions.”
+
+[In short, lumens equal brightness. And watts do not. Not that watts are bad, but they measure energy use, not light output. With new, energy-efficient LED technology, we can no longer rely upon wattage to indicate how bright a bulb is. See how to measure lumens below:](https://www.lumens.com/the-edit/the-guides/light-bulb-facts-the-meaning-of-lumens/?clickid=Wcb1IpTmPxyPWCty-6Ww21zPUkH2baQfFQts3k0&utm_medium=affiliate&utm_source=ir&irgwc=1&im_rewards=1)
+
+![Incandecent vs LED](../.././Project1/Lumen_Watts.png)
+
+## Data
+
+
+
+```{r}
+library(data4led)
+
+bulb <- led_bulb(1,seed=719) 
+t <- bulb$hours
+y <- bulb$percent_intensity
+
+c.11 <- sum(t^2)
+c.12 <- sum(t^3)
+c.22 <- sum(t^4)
+b.1 <- sum((y-100)*t)
+b.2 <- sum((y-100)*t^2)
+
+DT::datatable(bulb)
+```
+
+
+:::
+
+# Functions
+
+::: panel-tabset
+
+## Base Assumptions
+
+These model are intended to predict the decay of light bulb brightness overtime. The decay is measured by a percentage of the original brightness of the light bulb. A light bulb is considered bad after the bulb intensity is at 80% of its original value. There are 44 points within the data set $t_i$ is represented as the number of hours that the light bulb has been on. $y_i$ is a percentage of the light bulbs original intensity. The values used in this analysis are found in the data4led package within R utilizing the seed 719.
+
+For this analysis the assumption that the residuals are independent and normally distributed (with a mean of 0 and a standard deviation of 1) will be applied.
+
+
+These are the models that will be used to fit the data. Each of these functions are only true where $t \ge 0$
+
+```{r}
+pander::pander(data.frame("Function" = c("$f_1$", "$f_2$", "$f_4$", "$f_5$", "$f_6$"), "Equation" = c("$100 + 0.000204780548320951t$", "$f_2(t) = 100 +
+(0.000641522798405015)t +(-1.1442406838189 * 10^{-7})t^2$", "$100 +  (-0.000205194652371931) t + 0.489543302990463 *  ln(0.005t + 1)$", "$100 * e^{-0.00005t} + 0.00574982239530443t e^{-0.0005t}$", "$f_6(t) = 100 + (-0.000658665767730825)t +(4.76933030173676)(1 - e^{-0.0003t})$ ")))
+```
+
+## Loglikelihood Assumptions
+
+**These Assumptions will be applied to each model to simplify the calculations**
+
+The base equation for a normal distribution (mean of 0 sd of 1) is $f(r) = \frac{1}{\sqrt{2\pi}}e^{-r^2/2}$.
+
+An assumption to make the equation simpler is
+
+$r_i = y_i - f_{n}(t)$
+
+Because:
+
+$f(r_i) = \frac{1}{\sqrt{2\pi}}e^{-r_i^2/2} = \frac{1}{\sqrt{2\pi}}e^{-(y_i - f_{n}(t))^2/2}$
+
+The only thing to change from this next part equation to equation is if $a_2$ is used and what the equation is. The logic is the same. An important note is that the values will have a negative carried through all values of the function.
+
+$\begin{align*} \mathscr{l_k(a_1, a_2 (if needed); t, y)} &= \ln(L_k(a_1, a_2 (if needed);\textbf{t},\textbf{y})) &\text{(definition)}\\ &= \ln\left(\prod_{i=1}^{44}\frac{1}{\sqrt{2\pi}}e^{-\left(y_i - (f_{n}(t))\right)^2/2}\right) &\text{(substitution)}\\ &= \sum_{i=1}^{44}\ln\left(\frac{1}{\sqrt{2\pi}}e^{-\left(y_i - (f_n(t))\right)^2/2}\right) &\text{(logs turn products to sums)}\\ &= \sum_{i=1}^{44}\left(\ln\left(\frac{1}{\sqrt{2\pi}}\right)+\ln\left(e^{-\left(y_i - (f_n(t))\right)^2/2}\right)\right)&\text{(another product to sum)}\\ &= \sum_{i=1}^{44}\ln\left(\frac{1}{\sqrt{2\pi}}\right)+\sum_{i=1}^{44}\ln\left(e^{-\left(y_i - (f_n(t))\right)^2/2}\right)&\text{(separate the sum)}\\ &= \ln\left(\frac{1}{\sqrt{2\pi}}\right)\sum_{i=1}^{44}1+\sum_{i=1}^{44}\ln\left(e^{-\left(y_i - (f_n(t))\right)^2/2}\right)&\text{(pull out constant)}\\ &= \ln\left(\frac{1}{\sqrt{2\pi}}\right)\sum_{i=1}^{44}1+\sum_{i=1}^{44}-\frac{1}{2}\left(y_i - (f_n(t))\right)^2\ln\left(e\right)&\text{(bring power down)}\\ &= 44\ln\left(\frac{1}{\sqrt{2\pi}}\right)-\frac{1}{2}\sum_{i=1}^{44}\left(y_i - (f_n(t))\right)^2&\text{(simplify, note 44 sums of 1 equals 44)}. \end{align*}$
+
+This logic will be applied to each of the following problems. The reason for this is so that we can get a simple reproducible pattern to solve each of the equations.
+
+For each of the problems we will assume there is a total of 44 data points. We will also assume we are building a log likelihood function. For this reason we can build the assumption for each function that $44ln(\frac{1}{\sqrt{2\pi}})$. This part of the equation will build the framework for our probability distribution. Whereas the next part will be the iterations to build the counts and spread for our distribution. In order to do this each part will be subtracted by the rest of the equation.
+
+The other assumption is $-\frac{1}{2}\sum_{i=1}^{44}(y_i - (f_n(t_i))^2$
+
+So the final build to solve each of the models is:
+
+$44ln(\frac{1}{\sqrt{2\pi}}) - \frac{1}{2}\sum_{i=1}^{44}(y_i - (f_n(t_i))^2$
+
+**General Rules Applied**
+
+-   Summation of a Constant: For the constant term in the log-likelihood function.
+
+-   Properties of Logarithms: Not directly used in differentiation but relevant in understanding the structure of log-likelihood functions.
+
+## Derivative Assumptions
+
+Within each model there can be a part broken off. We will assume for each that this will be done before the explanation. In order to do this we will use the Sum and Difference Rule. This breaks each equation into two. The first part $44ln(\frac{1}{\sqrt{2\pi}})$. The other being unique to each equation. Because there is no $a_1$ or $a_2$ value for each we can eliminate this part within each equation. I will then refer to the equation as its original equation label (ex. $\ell_1$) with no change except the removal of: $44ln(\frac{1}{\sqrt{2\pi}})$.
+
+:::
+
+# Function 1
+
+::: panel-tabset
+
+## Loglikelihood
+
+**Beginning Problem**
+
+$f_1(t; a_1) = 100 + a_1t$ where $t \geq 0$
+
+**End Result**
+
+$\ell_1(a_1; \mathbf{t},\mathbf{y}) = 44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i - 100 - a_1t_i)^2$
+
+This is a linear model.
+
+-   I used the sum and difference rule when differentiating the squared term in the log-likelihood function, which is a sum/difference of terms.
+
+-   I used the power rule when differentiating the squared term (as $t^2$) in the log-likelihood function.
+
+
+## Derivatives
+
+*Base Equation*
+
+$$\ell_1(a_1; \mathbf{t},\mathbf{y}) =
+44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100 - a_1t_i)^2$$
+
+*Base Assumption applied*
+
+$$\ell_1(a_1; \mathbf{t},\mathbf{y}) = - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100 - a_1t_i)^2$$
+
+![Derivative 1 & 2](.././Task2/project2functionl1.jpg)
+
+On this first problem I started with the constant & constant multiple rule. This removed the first number and allowed me to put the derivative after the summation process. As such I was now able to apply the chain rule followed by the power and sum of difference rule. This got me to the first derivative. After that I only had to use the sum and difference rule to get the terms to seperated, and the power rule to drop the power.
+
+## Fitting
+
+**Base Function**
+
+The function $f_1()$ is defined as: $f_1(t; a_1) = 100 + a_1t$ where $t\geq0$.
+
+**Log Likelihood**
+
+The loglikelihood function for the errors of this model is: $$\ell_1(a_1; \mathbf{t},\mathbf{y}) =
+44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100 - a_1t_i)^2$$.
+
+**First Partial Derivative**
+
+$\frac{\partial{l_1}}{\partial{a_1}} = (\sum^{44}_it_i(y_i-100)) - (\sum^{44}_it_i^2)a_1$
+
+*Note: The results are below the explanation*
+
+We first need to find the answer for each of these $(\sum^{44}_it_i(y_i-100))$ & $- (\sum^{44}_it_i^2)$. For simplicity I will refer to them in the explanation as c & d respectively. The first derivative will be set to 0 to find the value for $a_1$. The equation will be $0 = c - d * a_1$. After this you solve for $a_1$ ending with an equation like so $\frac{-c}{d} = a_1$.
+
+```{r}
+c.l1.11 <- sum(t*(y-100))
+c.l1.12 <- -sum(t^2)
+a.1.1 <- -c.l1.11/c.l1.12
+
+
+pander::pander(paste0("This is the value for part c: ", c.l1.11))
+pander::pander(paste0("This is the value for part d: ", c.l1.12))
+pander::pander(paste0("This is the best value for $a_1$ ", a.1.1))
+
+x <- seq(-10,80001,2)
+
+f1 <- function(x=x,a1=a.1.1){
+  y.p <- 100 + a1 * x
+  return(y.p)
+}
+
+
+```
+
+```{r}
+y.p <- f1(x, a.1.1)
+```
+
+```{r}
+par(mfrow=c(1,2),mar=c(2.5,2.5,1,0.25))
+plot(t,y,xlab="Hour ", ylab="Intensity(%) ", pch=16,main='f1')
+lines(x,f1(x, a.1.1),col=2)
+plot(t,y,xlab="Hour ", ylab="Intensity(%) ", pch=16, xlim = c(-10,80000),ylim = c(-10,120))
+lines(x,f1(x,a.1.1),col=2)
+```
+
+**Second Partial Derivative**
+
+$\frac{\partial^2{l_1}}{\partial{a_1^2}} = - \sum_i^{44}t^2_i$
+
+## Prediction
+
+The intensity of a light bulb as a percent of the original intensity after 25,000 hours.
+
+```{r}
+f1 <- function(t, a1 = a.1.1){
+  100 + a.1.1 * t
+}
+
+pander::pander(paste0("This is the intensity at 25,000 hours ", f1(25000, a.1.1)))
+```
+
+Due to the nature of this model it is actually impossible to predict when it would reach an intensity that was less than 100% seeing that 100% is the initial intensity and this is a linear model it is impossible to have a brightness lower than 100% unless negative time was possible. Luckily for us that does not exist so it  removes the need for calculation.
+:::
+
+# Function 2
+
+::: panel-tabset
+## Loglikelihood
+
+**Beginning Problem**
+
+$f_2(t; a_1,a_2) = 100 + a_1t +a_2t^2$ where $t \geq 0$
+
+**End Result**
+
+$\ell_2(a_1,a_2; \mathbf{t},\mathbf{y}) = 44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i - 100 - a_1t_i - a_2t_i^2)^2$
+
+This model involves a quadratic term.
+
+-   I used the sum and difference rule for differentiating the combination of terms within the squared error.
+
+-   I used the power rule for differentiating the $t^2$ term.
+
+## Fitting
+
+Consider the model $f_2(t; a_1, a_2) = 100 + a_1t + a_2t^2$. The function $f_2$ models the brightness of a lightbulb, measured as a percent of the original intensity of the lightbulb, given the number of hours the lightbulb as been on, t. We will fit $f_2$to the list of 44 measurements, (ti,yi), obtained from the data4led package using the seed 719.
+
+Assuming the residuals (or errors) are independent and normally distributed (with mean 0 and standard deviation 1), the loglikelihood function for these errors is
+
+$\ell_2(a_1,a_2; \mathbf{t},\mathbf{y}) = 44\ln\left(\frac{1}{\sqrt{2\pi}}\right) + \sum_{i=1}^{44} \left(-\frac{1}{2}(y_i - 100 - a_1t_i - a_2t_i^2)^2\right).$
+
+We want to find the maximum of $\ell_2$. The first partials of $\ell_2$ are
+
+-   $$\frac{\partial\ell_2}{\partial a_1} =
+    \left(\sum_{i=1}^{44} (y_i - 100)t_i\right) -
+    \left(\sum_{i=1}^{44}t_i^2\right)a_1 -
+    \left(\sum_{i=1}^{44}t_i^3\right)a_2$$ and
+-   $$\frac{\partial\ell_2}{\partial a_2} =
+    \left(\sum_{i=1}^{44} (y_i - 100)t_i^2\right) -
+    \left(\sum_{i=1}^{44}t_i^3\right)a_1 -
+    \left(\sum_{i=1}^{44}t_i^4\right)a_2$$
+
+To find the critical points of $\ell_2$, we set each partial derivative above equal to zero and then solve
+
+$$\left\{
+\begin{array}{ll}
+\left(\sum_{i=1}^{44} (y_i - 100)t_i\right) -
+\left(\sum_{i=1}^{44}t_i^2\right)a_1 -
+\left(\sum_{i=1}^{44}t_i^3\right)a_2 &= 0 \\
+\left(\sum_{i=1}^{44} (y_i - 100)t_i^2\right) -
+\left(\sum_{i=1}^{44}t_i^3\right)a_1 -
+\left(\sum_{i=1}^{44}t_i^4\right)a_2 &= 0.
+\end{array}
+\right.$$
+
+We notice that this system is of the form:
+
+$$\left\{
+\begin{align*}
+b_1 - c_{11}a_1 - c_{12}a_2 &= 0 \\
+b_2 - c_{21}a_1 - c_{22}a_2 &= 0,
+\end{align*}
+\right.$$
+
+with:
+
+-   $$c_{11} =
+    \sum_{i=1}^{44}t_i^2$$
+
+-   $$c_{12} = c_{21} = \sum_{i=1}^{44}
+    t_i^3$$
+
+-   $$c_{22} = \sum_{i=1}^{44}
+    t_i^4$$
+
+-   $$b_1 = \sum_{i=1}^{44} (y_i -
+    100)t_i$$
+
+-   $$b_2 = \sum_{i=1}^{44} (y_i -
+    100)t_i^2$$
+
+Notice that $$\sum_{i=1}^{44} (y_i -
+100)t_i$$, $\sum_{i=1}^{44}t_i^2$, $\sum_{i=1}^{44} t_i^3$, $\sum_{i=1}^{44} (y_i - 100)t_i^2$, and $\sum_{i=1}^{44} t_i^4$ are just constants that depend on the given data. We can calculate (and store) their values using the R code below.
+
+```{r}
+c.11 <- sum(t^2)
+c.12 <- sum(t^3)
+c.22 <- sum(t^4)
+b.1 <- sum((y-100)*t)
+b.2 <- sum((y-100)*t^2)
+```
+
+Since we noticed this system is of a general form we have already solved, then we can use the solution from previous work. We found that the solution to this system is
+
+$$a_2 =
+\frac{c_{11}b_2 - c_{12}b_1}{c_{11}c_{22} - c_{12}^2}\text{ and }a_1 =
+\frac{b_1 - c_{12}a_2}{c_{11}}.$$ and $$a_2 =
+\frac{c_{11}b_2 - c_{12}b_1}{c_{11}c_{22} - c_{12}^2}\text{ and }a_1 =
+\frac{b_1 - c_{12}a_2}{c_{11}}.$$
+
+Below we use R to calculate $a_1$ and $a_2$ using the formula above.
+
+```{r}
+best.a2.2 <- (c.11*b.2 - c.12*b.1)/(c.11*c.22 - c.12^2) 
+best.a1.2 <- (b.1 - c.12*best.a2.2)/c.11 
+pander::pander(paste0("This is the best value for $a_1$:", best.a1.2))
+pander::pander(paste0("This is the best value for $a_2$:", best.a2.2))
+```
+
+The critical point for $\ell_2$ is $(a_1,a_2) = (0.000641522798405015, -1.1442406838189 \times 10^{-7}$. Let’s use the second derivative test to confirm that this critical point is the location of a maximum of $\ell_2$. The second partials of $\ell_2$are below. We will need the second partials for the second derivative test.
+
+-   $$\frac{\partial^2\ell_2}{\partial a_1^2}
+    = - \sum_{i=1}^{44}t_i^2$$
+
+-   $$\frac{\partial^2\ell_2}{\partial a_2^2}
+    = - \sum_{i=1}^{44}t_i^4$$
+
+-   $$\frac{\partial^2\ell_2}{\partial a_2
+    \partial a_1} = -\sum_{i=1}^{44}t_i^3$$
+
+When then compute
+
+$$D =
+\left(\frac{\partial^2\ell_2}{\partial a_1^2}\right)\left(
+\frac{\partial^2\ell_2}{\partial a_2^2}\right) -
+\left(\frac{\partial^2\ell_2}{\partial a_2 \partial a_1}\right)^2 =
+\left(- \sum_{i=1}^{44}t_i^2\right)\left(- \sum_{i=1}^{44}t_i^4\right) -
+\left(- \sum_{i=1}^{44}t_i^3\right)^2.$$
+
+To use the second derivative test, we need numerical values for both D and $\frac{\partial^2\ell_2}{\partial a_1^2}$. The code below computes both these values.
+
+```{r}
+D <- (-c.11)*(-c.22) - (-c.12)^2
+pander::pander(paste0("This is the value for D:", D))
+pander::pander(paste0("The second partial with respect to $a_1$ twice:", -c.11))
+
+```
+
+We see that $D = 1.23002961725515 \times 10^{23}$, which means D \> 0. The fact that D \> 0, together with $$\frac{\partial^2\ell_2}{\partial a_1^2} =
+-3.2876753\times 10^{8}<0$$ means that our critical point corresponds to a local maximum (by the second derivative test). The completes the computations for the maximum likelihood method.
+
+Our best fit model is
+
+$$f_2(t) = 100 +
+(0.000641522798405015)t +(-1.1442406838189\times 10^{-7})t^2$$
+
+```{r}
+f2 <- function(x,a0=0,a1=0,a2=1){
+  a0 + a1*x + a2*x^2
+}
+
+a0 <- 100
+a1 <- best.a1.2
+a2 <- best.a2.2
+
+x <- seq(-10,80001,2)
+par(mfrow=c(1,2),mar=c(2.5,2.5,1,0.25))
+plot(t,y,xlab="Hour ", ylab="Intensity(%) ", pch=16,main='f2')
+lines(x,f2(x,a0,best.a1.2,best.a2.2),col=2)
+plot(t,y,xlab="Hour ", ylab="Intensity(%) ", pch=16, xlim = c(-10,80000),ylim = c(-10,120))
+lines(x,f2(x,a0,best.a1.2,best.a2.2),col=2)
+```
+
+Notice that the graph of the fitted function does appear to provide a good visual fit to the data, as seen in the image above. The story told by this model suggests that the light bulb will burn out (hit 80% intensity) somewhere between 10 and 20 thousand hours (we could compute this exactly with uniroot).
+
+
+## Prediction
+
+The intensity of a light bulb as a percent of the original intensity after 25,000 hours.
+
+```{r}
+f2 <- function(t, a1 = best.a1.2, a2 = best.a2.2){
+  100 + a1 * t + a2 * t^2
+}
+
+pander::pander(paste0("This is the intensity at 25,000 hours ", f2(25000, best.a1.2, best.a2.2)))
+
+```
+
+Using the uniroot function I can predict the time that it reaches 80% of the initial intensity. Below is the predicted instance for when it reaches 80% of its original intensity.
+
+```{r}
+x <- seq(0, 25000, 1)
+root_function <- function(x){
+  (100 + a1 * x + a2 * x^2) - 80
+}
+
+root2 <- uniroot(root_function, c(0, 25000))$root
+
+pander::pander("This is the point where it reaches 80%: ")
+root2
+```
+
+
+:::
+
+# Function 4
+
+::: panel-tabset
+
+## Loglikelihood
+
+**Beginning Problem**
+
+$f_4(t; a_1,a_2) = 100 + a_1t + a_2\ln(0.005t+1)$ where $t \geq 0$
+
+**End Result**
+
+$\ell_4(a_1,a_2; \mathbf{t},\mathbf{y}) = 44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i - 100 - a_1t_i - a_2\ln(0.005t_i+1))^2$
+
+This model incorporates a logarithmic term
+
+-   I used the sum and difference rule for the combined terms in the squared error.
+
+-   I used the Power Rule for the $t$ term.
+
+-   I used the chain rule for differentiating the logarithmic term $ln(0.005 + 1)$.
+
+-   I used the natural logarithm rule as part of differentiating the logarithmic term.
+
+## Derivatives
+
+*Base Equation*
+
+$$\ell_4(a_1,a_2; \mathbf{t},\mathbf{y}) =
+44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100 - a_1t_i - a_2\ln(0.005t_i+1))^2$$
+
+*Base Assumption Applied*
+
+$$\ell_4(a_1,a_2; \mathbf{t},\mathbf{y}) = - \frac{1}{2}\sum_{i}^{44} (y_i - 100 - a_1t_i - a_2\ln(0.005t_i+1))^2$$
+
+::: panel-tabset
+### A1
+
+**First & Second Partial Derivative Respects to** $a_1$
+
+![First and Second w/ Respects to $a_1$](.././Task2/functionl4a1.jpg)
+
+For this equation I started with the constant rule which dropped the first term. Using the power and chain rule, I was able to drop the power and separate the terms out. I then multiplied the remaining term into the equation. This ended me up with the capability to use the sum & difference rule. This is the first derivative. Through utilizing this rule I can remove two of the terms. After utilizing the power rule on $a_1$ I was able to end up with the final result.
+
+### A2
+
+**First & Second Partial Derivative Respects to** $a_2$
+
+![First and Second w/ Respects to $a_2$](.././Task2/functionl4a2.jpg)
+
+For this equation I started with the constant rule which dropped the first term. Using the power and chain rule, I was able to drop the power and separate the terms out I then multiplied the remaining term into the equation. This ended me up with the capability to use the sum & difference rule. This is the first derivative. Through utilizing this rule I can remove two of the terms. After utilizing the power rule on $a_2$ I was able to end up with the final result.
+
+### A2 & A3
+
+**Mixed Second Partial Derivative with respect to** $a_2$ and then $a_1$
+
+Instead of doing the first derivative, because the calculations were done prior in the document, the mixed partial starts with the previously done part. See first derative of $a_2$. The first part to the mixed derivative is to use the constant rule this will remove all but the middle sum term. The next part involved the power rule. This removes the $a_1$ leaving just the value 1. We end up with the end term after this.
+
+![Mixed Derivative](.././Task2/functionl4mixed.jpg)
+
+:::
+
+## Fitting
+
+The function $f_4$ is defined as: $f_4(t; a_1,a_2) = 100 + a_1t + a_2\ln(0.005t+1)$ where $t\geq0$.
+
+**Log Likelihood**
+
+The loglikelihood function for the errors of this model is: $$\ell_4(a_1,a_2; \mathbf{t},\mathbf{y}) =
+44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100 - a_1t_i - a_2\ln(0.005t_i+1))^2$$.
+
+**Derivatives**
+
+::: panel-tabset
+### Partial Derivatives $a_1$
+
+**This is the first partial derivative**
+
+$\frac{\partial{l_4}}{\partial{a_1}} = \sum_i^{44}t_i(y_i-100) - (\sum^{44}_it_i^2)a_1 - (\sum_i^{44}t_i(ln(0.00005t_i + 1)))a_2$
+
+**This is the second partial derivative**
+
+$\frac{\partial^2{l_4}}{\partial{a_1^2}} = -(\sum^{44}_it_i^2)$
+
+### Partial Derivatives $a_2$
+
+**This is the first partial derivative**
+
+$\frac{\partial{l_4}}{\partial{a_2}} = (\sum_i^{44}(y_i-100)ln(0.0005t_i +1)) - (\sum^{44}_i t_i ln(0.0005t_i + 1))a_1 - (\sum(ln(0.0005t_i + 1))^2)a_2$
+
+**This is the second partial derivative**
+
+$\frac{\partial^2{l_4}}{\partial{a_2^2}} = - \sum^{44}_i(ln(0.0005t_i + 1))^2$
+
+### Systems of Equations
+
+For this section we will use the first derivatives with respect to $a_1$ and the first for $a_2$ respectively. Below each has been rephrased:
+
+**For** $a_1$
+
+$\frac{\partial{l_4}}{\partial{a_1}} = \sum_i^{44}t_i(y_i-100) - (\sum^{44}_it_i^2)a_1 - (\sum_i^{44}t_i(ln(0.0005t_i + 1)))a_2$
+
+**For** $a_2$
+
+$\frac{\partial{l_4}}{\partial{a_2}} = (\sum_i^{44}(y_i-100)ln(0.0005t_i +1)) - (\sum^{44}_i t_i ln(0.0005t_i + 1))a_1 - (\sum(ln(0.0005t_i + 1))^2)a_2$
+
+For both $a_1$ and $a_2$'s first derivative we will assume each constant to be b, c (with different numeric values to differentiate) respectively. So for each equation it could be rewritten as:
+
+$$\left\{
+\begin{align*}
+0 = b_1 - c_{11}*a_1 - c_{12}*a_2 \\
+0 = b_2 - c_{21}*a_1 - c_{22} *a_2
+\end{align*}
+\right.$$
+
+where
+
+-   $b_1 = \sum_i^{44}t_i(y_i-100)$
+-   $b_2 = (\sum_i^{44}(y_i-100)ln(0.0005t_i +1))$
+-   $c_{11} = - (\sum^{44}_it_i^2)$
+-   $c_{12} = - (\sum_i^{44}t_i(ln(0.0005t_i + 1)))$
+-   $c_{21} = - (\sum^{44}_i t_i ln(0.0005t_i + 1))$
+-   $c_{22} = - (\sum(ln(0.0005t_i + 1))^2)$
+
+In order to find the $a_1$ & $a_2$ we can use this formula:
+
+$a_2 =\frac{c_{11}b_2 - c_{12}b_1}{c_{11}c_{22} - c_{12}^2}\text{ and }a_1 =\frac{b_1 - c_{12}a_2}{c_{11}}$
+
+```{r}
+b.1 <- sum(t * (y - 100))
+b.2 <- sum((y - 100) * log(0.005*t + 1))
+c.11 <- - sum(t^2)
+c.12 <- - sum(t * log(0.005 * t + 1))
+c.21 <- - sum(t * log(0.005 * t + 1))
+c.22 <- - sum((log(0.005 * t + 1))^2)
+
+a2.4 <- ((c.11 * b.2) - (c.12 * b.1))/((c.11 * c.22) - (c.12^2))
+a1.4 <- (b.1 - (c.12 * a2.4))/(c.11)
+a1.4 <- -a1.4
+a2.4 <- -a2.4
+
+paste0("This is the best value for $a_1$:", a1.4)
+paste0("This is the best value for $a_2$:", a2.4)
+
+f4 <- function(x, a1.4, a2.4){
+  y4.p <- (100 + (a1.4 * x) + (a2.4 * log((0.005 * x) + 1)))
+  return(y4.p)
+}
+
+```
+
+```{r}
+par(mfrow=c(1,2),mar=c(2.5,2.5,1,0.25))
+plot(t,y,xlab="Hour ", ylab="Intensity(%) ", pch=16,main='f4')
+lines(x,f4(x, a1.4, a2.4),col=2)
+plot(t,y,xlab="Hour ", ylab="Intensity(%) ", pch=16, xlim = c(-10,80000),ylim = c(-10,120))
+lines(x,f4(x,a1.4, a2.4),col=2)
+```
+:::
+
+## Prediction
+
+The intensity of a light bulb as a percent of the original intensity after 25,000 hours.
+
+```{r}
+f4 <- function(t, a1 = a1.4, a2 = a2.4){
+  100 + a1 * t + a2 * log(0.005 * t + 1)
+}
+
+pander::pander(paste0("This is the intensity at 25,000 hours ", f4(25000, a1.4, a2.4)))
+
+```
+
+Using the uniroot function I can predict the time that it reaches 80% of the initial intensity. Below is the predicted instance for when it reaches 80% of its original intensity.
+
+```{r}
+x <- seq(0, 10000000, 10)
+root_function <- function(x){
+  ((100 * exp(-0.00005 * x) + a1 * x * exp(-0.00005 * x))) - 80
+}
+
+root4 <- uniroot(root_function, c(2000, 10000000))$root
+
+pander::pander("This is the point where it reaches 80%: ")
+root4
+```
+
+
+:::
+
+# Function 5 
+
+::: panel-tabset
+
+## Loglikelihood
+
+**Beginning Problem**
+
+$f_5(t; a_1) = 100e^{-0.00005t} + a_1te^{-0.00005t}$ where $t \geq 0$
+
+**End Result**
+
+$\ell_5(a_1; \mathbf{t},\mathbf{y}) = 44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i - 100e^{-0.00005t_i} - a_1t_ie^{-0.00005t_i})^2$
+
+This exponential model uses:
+
+-   I used the sum and difference rule for the sum of exponential terms.
+
+-   I used the Exponential Rule for differentiating the exponential term $e^{-0.00005t}$
+
+-   I used the Product Rule for the term $a_1te^{-0.00005t}$, which is a product of t and an exponential function.
+
+-   Chain Rule: For differentiating the composite function involving $t$ and the exponential term.
+
+
+## Derivatives
+
+*Base Equation*
+
+$$\ell_5(a_1; \mathbf{t},\mathbf{y}) =
+44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100e^{-0.00005t_i} - a_1t_ie^{-0.00005t_i})^2$$
+
+*Base Assumption Applied*
+
+$$\ell_5(a_1; \mathbf{t},\mathbf{y}) = - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100e^{-0.00005t_i} - a_1t_ie^{-0.00005t_i})^2$$
+
+![First & Second Derivative w/ Respects to $a_1$](.././Task2/functionl5a1.jpg)
+
+On this problem I started with the constant & constant multiple rule. This removed the first number and allowed me to put the derivative after the summation process. As such I was now able to apply the chain rule followed by the power and sum of difference rule. This got me to the first derivative. After that I only had to use the sum and difference rule to get the terms to seperated, and the power rule to drop the power.
+
+## Fitting
+
+The function $f_5$ is defined as: $f_5(t; a_1) = 100e^{-0.00005t} +a_1te^{-0.00005t}$ where $t\geq0$.
+
+**Log Likelihood**
+
+The log likelihood function for the errors of this model is: $$\ell_5(a_1; \mathbf{t},\mathbf{y}) =
+44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100e^{-0.00005t_i} - a_1t_ie^{-0.00005t_i})^2$$
+
+**First Partial Derivative**
+
+$\frac{\partial{l_5}}{\partial{a_1}} = \sum_i^{44}((y_i - 100 e^{-0.00005t_i})(t_ie^{-0.00005t_i})) - (\sum^{44}_i(t_ie^-0.00005t_i)^2)a_1$
+
+We first need to find the answer for each of these $\sum_i^{44}((y_i - 100 e^{-0.00005t_i})(t_ie^{-0.00005t_i}))$ & $- (\sum^{44}_i(t_ie^-0.00005t_i)^2)a_1$. For simplicity I will refer to them in the explanation as c & d respectively. The first derivative will be set to 0 to find the value for $a_1$. The equation will be $0 = c - d * a_1$. After this you solve for $a_1$ ending with an equation like so $\frac{-c}{d} = a_1$.
+
+```{r}
+c.l5.11 <- sum((y - 100 * exp(-0.00005*t)) * (t*exp(-0.00005 * t)))
+c.l5.12 <- -sum((t*exp((-0.00005*t)))^2)
+a5.1 <- -c.l5.11/c.l5.12
+
+
+pander::pander(paste0("This is the value for part c: ", c.l5.11))
+pander::pander(paste0("This is the value for part d: ", c.l5.12))
+pander::pander(paste0("This is the best value for $a_1$ ", a5.1))
+
+x <- seq(-10,80001,2)
+
+f5 <- function(x=x,a1=a5.1){
+  y.p <- (100*exp(-0.00005*x)) + (a5.1 * x * exp(-0.00005*x))
+  return(y.p)
+}
+```
+
+```{r}
+par(mfrow=c(1,2),mar=c(2.5,2.5,1,0.25))
+plot(t,y,xlab="Hour ", ylab="Intensity(%) ", pch=16,main='f1')
+lines(x,f5(x, a5.1),col=2)
+plot(t,y,xlab="Hour ", ylab="Intensity(%) ", pch=16, xlim = c(-10,80000),ylim = c(-10,120))
+lines(x,f5(x,a5.1),col=2)
+```
+
+**Second Partial Derivative**
+
+$\frac{\partial^2{l_5}}{\partial{a_1^2}} = \sum_i^{44}((t_ie^{-0.00005t_i})^2$
+
+## Prediction
+
+The intensity of a light bulb as a percent of the original intensity after 25,000 hours.
+
+```{r}
+f5 <- function(t, a1 = a5.1){
+  100 * exp(-0.00005 * t) + a1 * t * exp(-0.00005 * t)
+}
+
+pander::pander(paste0("This is the intensity at 25,000 hours ", f5(25000, a5.1)))
+
+```
+
+Using the uniroot function I can predict the time that it reaches 80% of the initial intensity. Below is the predicted instance for when it reaches 80% of its original intensity.
+
+```{r}
+x <- seq(0, 30000, 5)
+root_function <- function(x){
+  (100 * exp(-0.00005 * x) + a1 * x * exp(-0.00005 * x)) - 80
+}
+
+root5 <- uniroot(root_function, c(2000, 100000))$root
+
+pander::pander("This is the point where it reaches 80%: ")
+root5
+
+```
+
+:::
+
+# Function 6
+
+::: panel-tabset
+
+## Loglikelihood
+
+**Beginning Problem**
+
+$f_6(t; a_1,a_2) = 100 + a_1t + a_2(1-e^{-0.0003t})$ where $t \geq 0$
+
+**End Result**
+
+$\ell_6(a_1,a_2; \mathbf{t},\mathbf{y}) = 44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i - 100 - a_1t_i - a_2(1-e^{-0.0003t_i}))^2$
+
+-   I used the Sum and Difference Rule for the combination of terms in the squared error.
+
+-   I used the Power Rule for the $t$ term.
+
+-   I used the Exponential Rule for differentiating the exponential term $e^{-0.0003t}$.
+
+
+## Fitting
+
+We now consider the function $$f_6(t; a_1,
+a_2) = 100 + a_1t + a_2(1 - e^{-0.0003t})$$. The loglikelihood function we previously computed to be: $$\ell_6(a_1,a_2; \mathbf{t},\mathbf{y}) =
+44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i=1}^{44}
+(y_i - 100 - a_1t_i - a_2(1 - e^{-0.0003t_i}))^2.$$
+
+We will now apply the maximum likelihood method (assuming the errors are normally distributed) to identify the best fit parameters for this model using the data from our seed. Let’s first load the data, using the code below.
+
+To find the critical values of $\ell_6$ we need to solve the system of linear equations obtained by setting each partial derivative equal to zero, which means we must solve the system
+
+$$\left\{
+\begin{align*}
+\left(\sum_{i=1}^{44} (y_i - 100)t_i\right) -
+\left(\sum_{i=1}^{44}t_i^2\right)a_1 - \left(\sum_{i=1}^{44}t_i(1 -
+e^{-0.0003t_i})\right)a_2 &= 0 \\
+\left(\sum_{i=1}^{44} (y_i - 100)(1 - e^{-0.0003t_i})\right) -
+\left(\sum_{i=1}^{44}t_i(1 - e^{-0.0003t_i})\right)a_1 -
+\left(\sum_{i=1}^{44}(1 - e^{-0.0003t_i})^2\right)a_2 &= 0.
+\end{align*}
+\right.$$
+
+Once again we notice this system of equation is of the form
+
+$$\left\{
+\begin{align*}
+b_1 - c_{11}a_1 - c_{12}a_2 &= 0 \\
+b_2 - c_{21}a_1 - c_{22}a_2 &= 0.
+\end{align*}
+\right.$$
+
+where $$\sum_{i=1}^{44} (y_i
+- 100)t_i$$, $\sum_{i=1}^{44}t_i^2$, $\sum_{i=1}^{44}(1 - e^{-0.0003t_i})^2$, $\sum_{i=1}^{44} (y_i - 100)(1 - e^{-0.0003t_i})$, and $\sum_{i=1}^{44}(1 - e^{-0.0003t_i})^2$ are just constants that depend on the given data. Again we can calculate (and store) their values using R, as well as solve the system, using the code below.
+
+```{r}
+c.11 <- sum(t^2)
+c.12 <- sum(t*(1-exp(-0.0003*t)))
+c.22 <- sum((1-exp(-0.0003*t))^2)
+b.1 <- sum((y-100)*t)
+b.2 <- sum((y-100)*(1-exp(-0.0003*t)))
+
+best.a2.6 <- (c.11*b.2 - c.12*b.1)/(c.11*c.22 - c.12^2) 
+best.a1.6 <- (b.1 - c.12*best.a2.6)/c.11 
+
+pander::pander(paste0("This is the best value for $a_1$: ", best.a1.6))
+pander::pander(paste0("This is the best value for $a_2$: ", best.a2.6))
+```
+
+To finish the maximum likelihood method, we now use the second derivative test. The second partials of $\ell_6$ are:
+
+-   $$\frac{\partial^2 \ell_6}{a_1^2} = -
+    \sum_{i=1}^{44}t_i^2$$
+
+-   $$\frac{\partial^2 \ell_6}{a_2^2} = -
+    \sum_{i=1}^{44}(1-e^{-0.0003t_i})^2$$
+
+-   $$\frac{\partial^2\ell_6}{\partial a_2
+    \partial a_1} = -\sum_{i=1}^{44}t_i(1-e^{-0.0003t_i})$$
+
+The code below uses R to compute:
+
+$$\begin{align*}
+D
+&= \left(\frac{\partial^2\ell_6}{\partial a_1^2}\right)\left(
+\frac{\partial^2\ell_6}{\partial a_2^2}\right) -
+\left(\frac{\partial^2\ell_6}{\partial a_2 \partial a_1}\right)^2 \\
+&= \left(-\sum_{i=1}^{44}t_i\right)\left(-
+\sum_{i=1}^{44}(1-e^{-0.0003t_i})^2\right) -
+\left(-\sum_{i=1}^{44}t_i(1-e^{-0.0003t_i})\right)^2
+\end{align*}$$ and $\frac{\partial^2\ell_6}{\partial a_1^2}$
+
+```{r}
+D <- (-c.11)*(-c.22) - (-c.12)^2
+pander::pander(paste0("This is the value for D: ", D))
+pander::pander(paste0("The second partial with respect to $a_1$ twice: ", -c.11))
+```
+
+Because $$D = 7.3001831\times
+10^{7}>0$$ and $$\frac{\partial^2\ell_2}{\partial a_1^2} =
+-3.2876753\times 10^{8}<0$$, we know that our critical point corresponds to a local maximum (by the second derivative test). The completes the computations for the maximum likelihood method.
+
+Our best fit model is:
+
+$$f_6(t) = 100 +
+(-0.000658665767730825)t +(4.76933030173676)(1 - e^{-0.0003t})$$ where $t \ge 0$. Let's confirm this fit visually with the following R code.
+
+```{r}
+f6 <- function(x,a0=100,a1=0,a2=1){
+  a0 + a1*x + a2*(1-exp(-0.0003*x))
+}
+
+a0 <- 100
+a1 <- best.a1.6
+a2 <- best.a2.6
+
+x <- seq(-10,80001,2)
+par(mfrow=c(1,2),mar=c(2.5,2.5,1,0.25))
+plot(t,y,xlab="Hour ", ylab="Intensity(%) ", pch=16,main='f6')
+lines(x,f6(x,a0,best.a1.6,best.a2.6),col=2)
+plot(t,y,xlab="Hour ", ylab="Intensity(%) ", pch=16, xlim = c(-10,80000),ylim = c(-10,120))
+lines(x,f6(x,a0,best.a1.6,best.a2.6),col=2)
+```
+
+The figure above verifies that our fitted function does indeed provide a good visual fit for the model. For this model, the light bulb will burn out (hit 80% intensity) somewhere around 30,000 hours (again uniroot can find this time exactly).
+
+## Prediction
+
+The intensity of a light bulb as a percent of the original intensity after 25,000 hours.
+
+```{r}
+f6 <- function(t, a1 = best.a1.6, a2 = best.a2.6){
+  100 + a1 * t + a2 * (1 - exp(-0.0003 * t))
+}
+
+pander::pander(paste0("This is the intensity at 25,000 hours ", f6(25000, best.a1.6, best.a2.6)))
+```
+
+
+Using the uniroot function I can predict the time that it reaches 80% of the initial intensity. Below is the predicted instance for when it reaches 80% of its original intensity.
+
+```{r}
+x <- seq(0, 100000, 5)
+
+root_function <- function(x){
+  f6(x, best.a1.6, best.a2.6) - 80
+}
+
+root6 <- uniroot(root_function, c(2000, 100000))$root
+
+pander::pander("This is the point where it reaches 80%: ")
+root6
+```
+
+:::
+
+# Final Thoughts
+
+
+## Models
+
+Depending on the model used you can end up with very different conclusions and fits. To illistrate this take for example the first model used in this analysis, the assumption stated using this one is that the light will continue to increase in brightness forever. This is simply not true at all to anything we know about lightbulbs. The first step to building a good fit for the data is understanding a little bit about the data. For example, by understanding that it is impossible to have a lightbulb that will forever increase in brightness we know there is some level of decay that must be present. The question then must be asked how fast is the decay and is it immediate or does it rise for a time. These are just a few things to consider. However, making sure that you have the right model is hard if not impossible. As many statitians joke there are many great models some are useful. This meaning that just because it works does not mean it is correct or good at anwering the problem. Understanding the data helps us to know how to solve the problem.
+
+## Inconsistency
+
+As mentioned in the previous paragraph, the first model is very unrealistic to how light bulbs actually work. The rest of the models are great at fitting the data. However, it is important to cross validate. This will aid in finding which model or models are actually useful. 
+
+## Reflection
+
+
+One of the concepts that I feel like I really began to grasp with this project is the idea of derivatives. I also feel like I was able to learn more about logarithms and their properties as it relates to math. The final idea I feel like I learned a little more about is the inner workings of Linear Regression. 
+
+Some of the soft skills I need to improve is following directions, I feel like it can be improved upon from my experience with this project. Something I feel like I was good at was being self-directed, I feel like I taught myself a lot of the ideas in this project so that I could create each of the reports, this is something I really enjoyed. The last thing that I feel like could be improved upon is I need to work on planning. Between planning a wedding, working, classes, and relationships I feel as though I have had very little time. I think if I could plan each day I would find the time that I need to go about each day with additional strength and wisdom.
+
+
+:::

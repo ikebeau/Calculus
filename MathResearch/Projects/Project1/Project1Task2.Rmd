@@ -1,0 +1,151 @@
+---
+title: "Project 1"
+author: "Isaac Beaumont"
+date: "2024-01-22"
+output:
+  html_document:
+    theme: journal
+    code_folding: hide
+---
+
+
+
+```{r}
+f_0 <- function(x, a_0){
+    return(a_0)
+}
+f_1 <- function(x, a_0, a_1){
+    return(a_0 + a_1 * x)
+}
+f_2 <- function(x, a_0, a_1, a_2){
+    return(a_0 + a_1 * x + a_2 * x^2)
+}
+f_3 <- function(x, a_0, a_1, a_2){
+    return(a_0 + a_1 * exp(-a_2 * x))
+}
+f_4 <- function(x, a_0, a_1, a_2){
+    return(a_0 + a_1 * x + a_2)
+}
+f_5 <- function(x, a_0, a_1, a_2){
+    return((a_0 + a_1 * x) * exp(-a_2 * x))
+}
+```
+
+# Task 2 {.tabset}
+
+</br>
+
+**I decided to evaluate all the functions but will only graph 2 of them. Namely f_3(x) & f_5(x).**
+
+</br>
+
+## Functions {.tabset}
+
+</br>
+
+
+### Function 3
+
+
+
+The equation of $f_3(x)$ is as follows $f_3(x; a_0, a_1, a_2) = a_0 + a_1 * e^{-a_2 * x}$. This type of equation is commonly used for exponential decay of items. As such I will refer to the graph components in the context of decay.
+
+$x$ is the input variable so as that number changes movement across the x-axis changes at the same rate, unless altered by other variables.
+
+$a_0$ is a constant. As this number changes it changes the y asymptote of the graph. Negative values drop the y asymptote. Positive values drive it up.
+
+$a_1$ is a constant. As this number changes it will affect the degree or magnitude of the decay.
+
+$a_2$ is a constant. As this number changes it affects the rate at which the variables or object decays.
+
+
+
+
+```{r}
+
+```
+
+### Function 4
+
+
+The equation of $f_4(x)$ is as follows $f_4(x; a_0, a_1, a_2) = a_0 + a_1 * x + a_2$
+
+$x$ is the input variable so as that number changes movement across the x-axis changes at the same rate
+
+$a_0$ & $a_2$ are constants. These affect the vertical shift of the graph. As the values increase so does the vertical or y-intercept. They work together, and yet work seprately (they can be their own unique values) Thus making it so they affect the value together. In Linear Regression $a_2$ is commonly used with an $x_{2i}$ in order to turn a_2 into a variable to create a seperate line. However, as this does not exist they work in tandem. 
+
+$a_1$ is a constant that affects the slope or steepness of the line.
+
+
+
+```{r}
+
+```
+
+
+### Function 5
+
+
+
+The equation of $f_5(x)$ is as follows $f_5(x; a_0, a_1, a_2) = (a_0 + a_1 * x) * e^{-a_2 * x}$
+
+$x$ is the input variable so as that number changes movement across the x-axis changes at the same rate. It also is put into the decay rate affecting the speed with $-a_2$
+
+$a_0$ and $a_1$ create the linear part of the equation. $a_0$ controls the intercept. $a_1$ controls the slope and steepness of that line.
+
+$a_2$ however,  influences the exponential decay rate with $x$
+
+
+## Graphs
+
+**Here is the parameter values used in the graph**
+
+`Note: The 1st value is the blue line the 2nd is the red`
+
+*a0_values <- c(1, 2)*
+
+*a1_values <- c(2, 4)*
+
+*a2_values <- c(0.1, 4)*
+
+`Note: This creates a vector from 0 to 30 incrementing by 0.5`
+
+*x <- seq(0, 30, .5)*
+
+`Note: Creation of y values for respective functions`
+
+*y_3 <- f_3(x, a0_values, a1_values, a2_values)*
+
+*y_5 <- f_5(x, a0_values, a1_values, a2_values)*
+
+
+
+```{r, warning=FALSE}
+
+a0_values <- c(1, 2)
+a1_values <- c(2, 4)
+a2_values <- c(0.1, 2)
+x <- seq(0, 30, .5)
+y_3 <- f_3(x, a0_values, a1_values, a2_values)
+y_4 <- f_5(x, a0_values, a1_values, a2_values)
+
+par(mfrow = c(1, 2))
+
+# Plot for f_3
+plot(x, f_3(x, a0_values[1], a1_values[1], a2_values[1]), type = "l", col = "blue", ylab = "f_3(x)", main = "Exploration of f_3", ylim = c(1, 6), xlim = c(0, 35))
+lines(x, f_3(x, a0_values[2], a1_values[2], a2_values[2]), col = "red")
+
+# Plot for f_5
+plot(x, f_5(x, a0_values[1], a1_values[1], a2_values[1]), type = "l", col = "blue", ylab = "f_5(x)", main = "Exploration of f_5", xlim = c(0, 30), ylim = c(0, 9))
+lines(x, f_5(x, a0_values[2], a1_values[2], a2_values[2]), col = "red")
+
+par(mfrow = c(1, 1))
+
+
+```
+
+As is stated above the graphs rendered show the values for $f_3(x)$ and $f_5x$. Each of the values. 
+
+In the first graph $a_0$ affects the asymptote of the graph. $a_1$ affects the start location of the trend. $a_2$ will affect the steepness of the trend. 
+
+In the second graph $a_0$ affects the assymptote of the graph.The $a_1$ variable will affect the start location on the x-axis of the leveling off. The $a_2$ variable will affect the steepness of the trend.

@@ -1,0 +1,19 @@
+---
+title: "InClass1-12-2024"
+format: 
+  html: 
+    theme: journal
+    code-fold: true
+execute:
+  echo: true
+  warning: false
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+
+```

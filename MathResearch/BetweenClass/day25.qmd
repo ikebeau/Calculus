@@ -1,0 +1,55 @@
+---
+title: "Day 25"
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+execute: 
+  echo: false
+  warning: false
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+x <- seq(-1000, 1000, 0.1)
+y1 <- 1200 * x - x^2
+y2 <- 2400 * x - 2 * x^2
+y3 <- 6 * x^2 - 96
+df1 <- data.frame(x, y1)
+df2 <- data.frame(x, y2)
+df3 <- data.frame(x, y3)
+v1 <- max(df1$y1)
+a1 <- df1 |>
+  filter(y1 == v1) |>
+  select(x)
+v2 <- max(df2$y2)
+a2 <- df2 |>
+  filter(y2 == v2) |>
+  select(x)
+v3 <- min(df3$y3)
+a3 <- df3 |>
+  filter(y3 <= 2400) |>
+  select(x)
+```
+
+```{r}
+ggplot(df1, aes(x = x, y = y1)) + 
+  geom_line() + 
+  geom_vline(xintercept = 20, color = "blue") + 
+  labs(title = "The best value is at 20 (Working with whole Values)")
+```
+
+```{r}
+ggplot(df2, aes(x = x, y = y2)) + 
+  geom_line() + 
+  geom_vline(xintercept = 60, color = "blue") + 
+  labs(title = "The best value is at 60")
+```
+
+```{r}
+ggplot(subset(df3, x > -25 & x < 25), aes(x = x, y = y3)) + 
+  geom_line() + 
+  geom_vline(xintercept = 4, color = "blue") + 
+  labs(title = "The best value is at 4")
+```

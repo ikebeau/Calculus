@@ -1,0 +1,31 @@
+---
+title: "Between Class"
+format: html
+editor: visual
+---
+
+```{r}
+#integrate(function(x) (1/4)*(2*x - 3), lower = 2, upper = 3)
+#integrate(function(x) (1/4), lower = 0, upper = 2)
+integrate(function(x) (4/x), lower = 1, upper = 5)
+```
+
+```{r}
+# Define a function to perform the integral for a given value of c
+integrate_c <- function(c) {
+  integral_value <- integrate(function(x) c*(x - 2), lower = 4, upper = 6)$value
+  return(integral_value)
+}
+
+# Find the value of c for which the integral equals 1
+# You can use a numerical method such as uniroot
+
+find_c <- function() {
+  uniroot(function(c) integrate_c(c) - 1, interval = c(0, 10))$root
+}
+
+# Execute the function to find the value of c
+c_value <- find_c()
+c_value
+
+```

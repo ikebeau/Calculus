@@ -1,0 +1,89 @@
+---
+title: "Task 2"
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+execute: 
+  echo: false
+  warning: false
+editor: visual
+---
+
+::: panel-tabset
+## Base Assumption
+
+Within each model there can be a part broken off. We will assume for each that this will be done before the explanation. In order to do this we will use the Sum and Difference Rule. This breaks each equation into two. The first part $44ln(\frac{1}{\sqrt{2\pi}})$. The other being unique to each equation. Because there is no $a_1$ or $a_2$ value for each we can eliminate this part within each equation. I will then refer to the equation as its original equation label (ex. $\ell_1$) with no change except the removal of: $44ln(\frac{1}{\sqrt{2\pi}})$.
+
+## Function L 1
+
+*Base Equation*
+
+$$\ell_1(a_1; \mathbf{t},\mathbf{y}) =
+44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100 - a_1t_i)^2$$
+
+*Base Assumption applied*
+
+$$\ell_1(a_1; \mathbf{t},\mathbf{y}) = - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100 - a_1t_i)^2$$
+
+![Derivative 1 & 2](project2functionl1.jpg)
+
+On this first problem I started with the constant & constant multiple rule. This removed the first number and allowed me to put the derivative after the summation process. As such I was now able to apply the chain rule followed by the power and sum of difference rule. This got me to the first derivative. After that I only had to use the sum and difference rule to get the terms to seperated, and the power rule to drop the power.
+
+## Function L 4
+
+*Base Equation*
+
+$$\ell_4(a_1,a_2; \mathbf{t},\mathbf{y}) =
+44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100 - a_1t_i - a_2\ln(0.005t_i+1))^2$$
+
+*Base Assumption Applied*
+
+$$\ell_4(a_1,a_2; \mathbf{t},\mathbf{y}) = - \frac{1}{2}\sum_{i}^{44} (y_i - 100 - a_1t_i - a_2\ln(0.005t_i+1))^2$$
+
+::: panel-tabset
+### A1
+
+**First & Second Partial Derivative Respects to** $a_1$
+
+![First and Second w/ Respects to $a_1$](functionl4a1.jpg)
+
+For this equation I started with the constant rule which dropped the first term. Using the power and chain rule, I was able to drop the power and separate the terms out. I then multiplied the remaining term into the equation. This ended me up with the capability to use the sum & difference rule. This is the first derivative. Through utilizing this rule I can remove two of the terms. After utilizing the power rule on $a_1$ I was able to end up with the final result.
+
+### A2
+
+**First & Second Partial Derivative Respects to** $a_2$
+
+![First and Second w/ Respects to $a_2$](functionl4a2.jpg)
+
+For this equation I started with the constant rule which dropped the first term. Using the power and chain rule, I was able to drop the power and separate the terms out I then multiplied the remaining term into the equation. This ended me up with the capability to use the sum & difference rule. This is the first derivative. Through utilizing this rule I can remove two of the terms. After utilizing the power rule on $a_2$ I was able to end up with the final result.
+
+### A2 & A3
+
+**Mixed Second Partial Derivative with respect to** $a_2$ and then $a_1$
+
+Instead of doing the first derivative, because the calculations were done prior in the document, the mixed partial starts with the previously done part. See first derative of $a_2$. The first part to the mixed derivative is to use the constant rule this will remove all but the middle sum term. The next part involved the power rule. This removes the $a_1$ leaving just the value 1. We end up with the end term after this.
+
+![Mixed Derivative](functionl4mixed.jpg)
+:::
+
+## Function L 5
+
+*Base Equation*
+
+$$\ell_5(a_1; \mathbf{t},\mathbf{y}) =
+44\ln\left(\frac{1}{\sqrt{2\pi}}\right) - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100e^{-0.00005t_i} - a_1t_ie^{-0.00005t_i})^2$$
+
+*Base Assumption Applied*
+
+$$\ell_5(a_1; \mathbf{t},\mathbf{y}) = - \frac{1}{2}\sum_{i}^{44} (y_i
+- 100e^{-0.00005t_i} - a_1t_ie^{-0.00005t_i})^2$$
+
+![First & Second Derivative w/ Respects to $a_1$](functionl5a1.jpg)
+
+On this problem I started with the constant & constant multiple rule. This removed the first number and allowed me to put the derivative after the summation process. As such I was now able to apply the chain rule followed by the power and sum of difference rule. This got me to the first derivative. After that I only had to use the sum and difference rule to get the terms to seperated, and the power rule to drop the power.
+:::

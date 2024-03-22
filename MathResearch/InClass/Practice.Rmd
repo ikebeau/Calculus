@@ -1,0 +1,32 @@
+---
+title: "Uniroot"
+author: "Isaac Beaumont"
+date: "2024-01-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+f <- function(x){
+  5 + 3*exp(2*x)
+}
+h <- function(x){
+  f(x) - 7
+}
+```
+
+```{r}
+x <- seq(-50, 50, 0.1)
+y <- h(x)
+plot(x, y, type="l", ylim = c(-2, 10))
+abline(h=0, col="grey")
+```
+
+
+```{r}
+uniroot(h, c(-20, 20))$root
+```
+
